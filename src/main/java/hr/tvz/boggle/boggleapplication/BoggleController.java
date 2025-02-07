@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import java.io.*;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class BoggleController {
@@ -239,7 +240,7 @@ public class BoggleController {
             // Create a new scene with the player setup UI
             Scene scene = new Scene(root);
 
-            scene.getStylesheets().add(getClass().getResource("/hr/tvz/boggle/boggleapplication/style.css").toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/hr/tvz/boggle/boggleapplication/style.css")).toExternalForm());
 
             // Get the current stage using one of UI elements and set the new scene
             Stage stage = (Stage) currentPlayerLabel.getScene().getWindow();
@@ -287,7 +288,7 @@ public class BoggleController {
     private void addCellToSelection(Label cell, String letter) {
         if (selectedCells.contains(cell)) {
             selectedCells.remove(cell);
-            if (currentWord.length() > 0) {
+            if (!currentWord.isEmpty()) {
                 currentWord.deleteCharAt(currentWord.length() - 1);
             }
             cell.setStyle("-fx-background-color: #ecf0f1; -fx-border-color: black; -fx-padding: 15px; " +

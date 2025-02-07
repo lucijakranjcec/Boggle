@@ -6,14 +6,14 @@
 <?import javafx.scene.control.Label?>
 
 <VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="hr.tvz.boggle.boggleapplication.BoggleController"
-      spacing="20" alignment="TOP_LEFT" styleClass="main-container">
+      spacing="20" styleClass="main-container">
 
     <!-- Navigation Bar -->
-    <HBox fx:id="navBar" alignment="CENTER_LEFT" spacing="20" styleClass="nav-bar">
-        <Button fx:id="newGameButton" text="New Game" onAction="#handleNewGame" styleClass="nav-link"/>
-        <Button fx:id="saveGameButton" text="Save Game" onAction="#saveGame" styleClass="nav-link"/>
-        <Button fx:id="loadGameButton" text="Load Game" onAction="#loadGame" styleClass="nav-link"/>
-        <Button fx:id="generateDocumentationButton" text="Generate documentation" onAction="#generateHTMLDocumentation" styleClass="nav-link"/>
+    <HBox alignment="CENTER_LEFT" spacing="20" styleClass="nav-bar">
+        <Button text="New Game" onAction="#handleNewGame" styleClass="nav-link"/>
+        <Button text="Save Game" onAction="#saveGame" styleClass="nav-link"/>
+        <Button text="Load Game" onAction="#loadGame" styleClass="nav-link"/>
+        <Button text="Generate documentation" onAction="#generateHTMLDocumentation" styleClass="nav-link"/>
     </HBox>
 
     <!-- Current Player Info -->
