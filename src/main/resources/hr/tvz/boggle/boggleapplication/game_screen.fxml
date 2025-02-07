@@ -13,6 +13,7 @@
         <Button fx:id="newGameButton" text="New Game" onAction="#handleNewGame" styleClass="nav-link"/>
         <Button fx:id="saveGameButton" text="Save Game" onAction="#saveGame" styleClass="nav-link"/>
         <Button fx:id="loadGameButton" text="Load Game" onAction="#loadGame" styleClass="nav-link"/>
+        <Button fx:id="generateDocumentationButton" text="Generate documentation" onAction="#generateHTMLDocumentation" styleClass="nav-link"/>
     </HBox>
 
     <!-- Current Player Info -->

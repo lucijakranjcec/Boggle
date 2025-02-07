@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Boggle Documentation</title>
+</head>
+<body>
+<h1>Boggle board game documentation</h1>
+<h2>public hr.tvz.boggle.boggleapplication.Board</h2>
+<h3>Fields:</h3>
+<p>private final [Ljava.lang.String; dice</p>
+<p>private [[C board</p>
+<h3>Constructors:</h3>
+<p>public hr.tvz.boggle.boggleapplication.Board()</p>
+<h3>Methods:</h3>
+<p>public [[C getBoard()</p>
+<p>public void setBoard([[C arg0)</p>
+<p>public void generateBoard()</p>
+<h2>public hr.tvz.boggle.boggleapplication.BoggleApplication</h2>
+<h3>Fields:</h3>
+<p>private static final java.util.logging.Logger logger</p>
+<h3>Constructors:</h3>
+<p>public hr.tvz.boggle.boggleapplication.BoggleApplication()</p>
+<h3>Methods:</h3>
+<p>public static void main([Ljava.lang.String; arg0)</p>
+<p>public void start(javafx.stage.Stage arg0)</p>
+<h2>public hr.tvz.boggle.boggleapplication.BoggleController</h2>
+<h3>Fields:</h3>
+<p>private javafx.scene.layout.GridPane boardGrid</p>
+<p>private javafx.scene.control.Button submitButton</p>
+<p>private javafx.scene.control.Button clearButton</p>
+<p>private javafx.scene.control.Label timerLabel</p>
+<p>private javafx.scene.control.Label wordCounterLabel</p>
+<p>private javafx.scene.control.Label wordsCorrect</p>
+<p>private javafx.scene.layout.VBox nextPlayerBox</p>
+<p>private javafx.scene.control.Label nextPlayerLabel</p>
+<p>private javafx.scene.control.Button nextPlayerButton</p>
+<p>private javafx.scene.layout.VBox gameOverBox</p>
+<p>private javafx.scene.control.Label winnerLabel</p>
+<p>private javafx.scene.control.Label scoreLabel</p>
+<p>private javafx.scene.control.Label currentPlayerLabel</p>
+<p>private hr.tvz.boggle.boggleapplication.Board board</p>
+<p>private hr.tvz.boggle.boggleapplication.Dictionary dictionary</p>
+<p>private java.util.Set selectedCells</p>
+<p>private java.lang.StringBuilder currentWord</p>
+<p>private javafx.scene.control.Label lastSelectedCell</p>
+<p>private java.util.List players</p>
+<p>private int currentPlayerIndex</p>
+<p>private hr.tvz.boggle.util.GameTimer gameTimer</p>
+<p>private static final int INITIAL_TIME</p>
+<h3>Constructors:</h3>
+<p>public hr.tvz.boggle.boggleapplication.BoggleController()</p>
+<h3>Methods:</h3>
+<p>public void initialize()</p>
+<p>public void setPlayers(java.util.List arg0)</p>
+<p>public void startGame()</p>
+<p>public void loadGame()</p>
+<p>public void saveGame()</p>
+<p>private java.lang.String getScores()</p>
+<p>private void startTimer()</p>
+<p>private void endTurn()</p>
+<p>private void lambda$initialize$0(javafx.event.ActionEvent arg0)</p>
+<p>public void generateHTMLDocumentation()</p>
+<p>private void lambda$initialize$1(javafx.event.ActionEvent arg0)</p>
+<p>private void lambda$initialize$2(javafx.event.ActionEvent arg0)</p>
+<p>private void handleClearSelection()</p>
+<p>private void updateBoardUI()</p>
+<p>private void updatePlayerUI()</p>
+<p>private void displayGameResults()</p>
+<p>private java.lang.String getWinnerDetails()</p>
+<p>private void handleNextPlayer()</p>
+<p>private void addCellToSelection(javafx.scene.control.Label arg0, java.lang.String arg1)</p>
+<p>private void handleNewGame()</p>
+<p>private void handleWordSubmit()</p>
+<p>private void handleCellClick(javafx.scene.input.MouseEvent arg0)</p>
+<p>private void resetForNextPlayer()</p>
+<p>private void clearSelection()</p>
+<h2>public hr.tvz.boggle.boggleapplication.Dictionary</h2>
+<h3>Fields:</h3>
+<p>private java.util.Set words</p>
+<h3>Constructors:</h3>
+<p>public hr.tvz.boggle.boggleapplication.Dictionary(java.lang.String arg0)</p>
+<h3>Methods:</h3>
+<p>private void loadWords(java.lang.String arg0)</p>
+<p>public boolean isValidWord(java.lang.String arg0)</p>
+<h2>public hr.tvz.boggle.boggleapplication.Player</h2>
+<h3>Fields:</h3>
+<p>private static final long serialVersionUID</p>
+<p>private java.lang.String name</p>
+<p>private int wordCount</p>
+<p>private java.util.Set foundWords</p>
+<h3>Constructors:</h3>
+<p>public hr.tvz.boggle.boggleapplication.Player(java.lang.String arg0)</p>
+<h3>Methods:</h3>
+<p>public java.lang.String getName()</p>
+<p>public int getWordCount()</p>
+<p>public void addFoundWord(java.lang.String arg0)</p>
+<p>public boolean hasFoundWord(java.lang.String arg0)</p>
+<p>public void incrementWordCount()</p>
+<h2>public hr.tvz.boggle.boggleapplication.PlayerSetupController</h2>
+<h3>Fields:</h3>
+<p>private javafx.scene.control.TextField playerCountField</p>
+<p>private javafx.scene.layout.VBox playerNamesBox</p>
+<p>private javafx.scene.control.Button startGameButton</p>
+<p>private javafx.scene.control.Button loadGameButton</p>
+<h3>Constructors:</h3>
+<p>public hr.tvz.boggle.boggleapplication.PlayerSetupController()</p>
+<h3>Methods:</h3>
+<p>private void startGame()</p>
+<p>private void loadGame()</p>
+<p>public void onPlayerCountChange()</p>
+<p>private void checkIfAllFieldsFilled()</p>
+<p>private void lambda$onPlayerCountChange$0(javafx.beans.value.ObservableValue arg0, java.lang.String arg1, java.lang.String arg2)</p>
+<h2>public hr.tvz.boggle.model.GameState</h2>
+<h3>Fields:</h3>
+<p>private static final long serialVersionUID</p>
+<p>private [[Ljava.lang.String; boardState</p>
+<p>private int currentPlayerIndex</p>
+<p>private java.util.List players</p>
+<p>private int remainingTime</p>
+<h3>Constructors:</h3>
+<p>public hr.tvz.boggle.model.GameState([[Ljava.lang.String; arg0, int arg1, java.util.List arg2, int arg3)</p>
+<p>public hr.tvz.boggle.model.GameState()</p>
+<h3>Methods:</h3>
+<p>public boolean equals(java.lang.Object arg0)</p>
+<p>public java.lang.String toString()</p>
+<p>public int hashCode()</p>
+<p>public void setPlayers(java.util.List arg0)</p>
+<p>public java.util.List getPlayers()</p>
+<p>public void setCurrentPlayerIndex(int arg0)</p>
+<p>protected boolean canEqual(java.lang.Object arg0)</p>
+<p>public int getCurrentPlayerIndex()</p>
+<p>public int getRemainingTime()</p>
+<p>public [[Ljava.lang.String; getBoardState()</p>
+<p>public void setBoardState([[Ljava.lang.String; arg0)</p>
+<p>public void setRemainingTime(int arg0)</p>
+<h2>public hr.tvz.boggle.util.DialogUtils</h2>
+<h3>Constructors:</h3>
+<p>public hr.tvz.boggle.util.DialogUtils()</p>
+<h3>Methods:</h3>
+<p>public static void showAlert(javafx.scene.control.Alert$AlertType arg0, java.lang.String arg1)</p>
+<h2>public hr.tvz.boggle.util.DocumentationUtils</h2>
+<h3>Constructors:</h3>
+<p>public hr.tvz.boggle.util.DocumentationUtils()</p>
+<h3>Methods:</h3>
+<p>private static boolean lambda$generateDocumentation$1(java.nio.file.Path arg0)</p>
+<p>private static boolean lambda$generateDocumentation$0(java.nio.file.Path arg0)</p>
+<p>public static void generateDocumentation()</p>
+<h2>public hr.tvz.boggle.util.GameTimer</h2>
+<h3>Fields:</h3>
+<p>private javafx.animation.Timeline timeline</p>
+<p>private int timeLeft</p>
+<p>private hr.tvz.boggle.util.GameTimer$TimerListener listener</p>
+<h3>Constructors:</h3>
+<p>public hr.tvz.boggle.util.GameTimer(int arg0, hr.tvz.boggle.util.GameTimer$TimerListener arg1)</p>
+<h3>Methods:</h3>
+<p>public void reset(int arg0)</p>
+<p>public void start()</p>
+<p>public void stop()</p>
+<p>private void lambda$start$0(javafx.event.ActionEvent arg0)</p>
+<p>public int getTimeLeft()</p>
+</body>
+</html>

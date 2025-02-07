@@ -2,6 +2,7 @@ package hr.tvz.boggle.boggleapplication;
 
 import hr.tvz.boggle.model.GameState;
 import hr.tvz.boggle.util.DialogUtils;
+import hr.tvz.boggle.util.DocumentationUtils;
 import hr.tvz.boggle.util.GameTimer;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -425,6 +426,11 @@ public class BoggleController {
         } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public void generateHTMLDocumentation() {
+        DocumentationUtils.generateDocumentation();
+        DialogUtils.showAlert(Alert.AlertType.INFORMATION, "Documentation was successfully generated!");
     }
 
 }
