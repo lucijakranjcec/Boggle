@@ -6,7 +6,7 @@ import java.util.Set;
 public class Player {
     private String name;
     private int wordCount;
-    private Set<String> foundWords; // Set za praćenje pronađenih riječi
+    private Set<String> foundWords;
 
     public Player(String name) {
         this.name = name;

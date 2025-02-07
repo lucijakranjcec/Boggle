@@ -7,16 +7,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public class BoggleApplication extends Application {
 
     private static final Logger logger = Logger.getLogger(BoggleApplication.class.getName());
-    private static Stage primaryStage;
 
     @Override
     public void start(Stage primaryStage) {
-        BoggleApplication.primaryStage = primaryStage;
 
         try {
             logger.info("Loading FXML file...");
@@ -25,7 +24,7 @@ public class BoggleApplication extends Application {
 
             // adding CSS styles
             Scene scene = new Scene(root, 700, 600);
-            scene.getStylesheets().add(getClass().getResource("/hr/tvz/boggle/boggleapplication/style.css").toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/hr/tvz/boggle/boggleapplication/style.css")).toExternalForm());
 
             primaryStage.setScene(scene);
             primaryStage.setTitle("Boggle Game");

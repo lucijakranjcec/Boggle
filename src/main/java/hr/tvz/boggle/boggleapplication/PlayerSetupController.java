@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class PlayerSetupController {
 
@@ -24,87 +25,68 @@ public class PlayerSetupController {
     @FXML
     private Button startGameButton;
 
-    private List<Player> players;
-
+    // Called when the player count field changes
     public void onPlayerCountChange() {
         playerNamesBox.getChildren().clear();
-        int playerCount;
-
+        int count;
         try {
-            playerCount = Integer.parseInt(playerCountField.getText());
+            count = Integer.parseInt(playerCountField.getText());
         } catch (NumberFormatException e) {
-            showAlert(Alert.AlertType.WARNING, "Please enter a valid number.");
+            AlertHelper.showAlert(Alert.AlertType.WARNING, "Please enter a valid number.");
             return;
         }
-
-        if (playerCount >= 2 && playerCount <= 5) {
-            for (int i = 0; i < playerCount; i++) {
-                TextField playerNameField = new TextField();
-                playerNameField.setPromptText("Enter Player " + (i + 1) + " Name");
-                playerNameField.getStyleClass().add("input-field");
-                playerNameField.textProperty().addListener((observable, oldValue, newValue) -> checkIfAllFieldsFilled());
-                playerNamesBox.getChildren().add(playerNameField);
-            }
-        } else {
-            showAlert(Alert.AlertType.WARNING, "Number of players must be between 2 and 5.");
+        if (count < 2 || count > 5) {
+            AlertHelper.showAlert(Alert.AlertType.WARNING, "Number of players must be between 2 and 5.");
+            return;
         }
+        // Create a text field for each player name and add a listener
+        for (int i = 0; i < count; i++) {
+            TextField nameField = new TextField();
+            nameField.setPromptText("Enter Player " + (i + 1) + " Name");
+            // Add listener so that whenever the text changes, we check if all fields are filled
+            nameField.textProperty().addListener((observable, oldValue, newValue) -> checkIfAllFieldsFilled());
+            playerNamesBox.getChildren().add(nameField);
+        }
+        // Check immediately after creating the fields
         checkIfAllFieldsFilled();
     }
 
+    // Enable the start button if all player name fields are filled
     private void checkIfAllFieldsFilled() {
-        int playerCount = Integer.parseInt(playerCountField.getText());
+        int count = Integer.parseInt(playerCountField.getText());
         boolean allFilled = true;
-
-        for (int i = 0; i < playerCount; i++) {
-            TextField playerNameField = (TextField) playerNamesBox.getChildren().get(i);
-            if (playerNameField.getText().isEmpty()) {
+        for (int i = 0; i < count; i++) {
+            TextField nameField = (TextField) playerNamesBox.getChildren().get(i);
+            if (nameField.getText().trim().isEmpty()) {
                 allFilled = false;
                 break;
             }
         }
-
         startGameButton.setDisable(!allFilled);
     }
 
+    // Start the game by collecting player names and loading the game screen
     @FXML
     private void startGame() {
-        // Get player count and names, then initialize the game
-        int playerCount = Integer.parseInt(playerCountField.getText());
-        players = new ArrayList<>();
-
-        // Collect player names and create Player objects
-        for (int i = 0; i < playerCount; i++) {
-            TextField playerNameField = (TextField) playerNamesBox.getChildren().get(i);
-            String playerName = playerNameField.getText();
-            players.add(new Player(playerName)); // Assuming Player class takes a name as a constructor
+        int count = Integer.parseInt(playerCountField.getText());
+        List<Player> players = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            TextField nameField = (TextField) playerNamesBox.getChildren().get(i);
+            players.add(new Player(nameField.getText()));
         }
-
-        // Transition to the Game Screen
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/hr/tvz/boggle/boggleapplication/game_screen.fxml"));
             VBox root = loader.load();
-
-            // Pass player data to the game controller (via BoggleController)
             BoggleController controller = loader.getController();
-            controller.setPlayers(players); // Pass players to the game controller
-
-            // Start the game from BoggleController
-            controller.startGame();  // Start the game after setting players
-
-            // Create a new scene for the game screen
-            Scene gameScene = new Scene(root, 700, 800);
-            gameScene.getStylesheets().add(getClass().getResource("/hr/tvz/boggle/boggleapplication/style.css").toExternalForm());
-
-            // Close the player setup window and show the game screen
+            controller.setPlayers(players);
+            controller.startGame();
+            Scene scene = new Scene(root, 700, 800);
+            scene.getStylesheets().add(Objects.requireNonNull(
+                    getClass().getResource("/hr/tvz/boggle/boggleapplication/style.css")).toExternalForm());
             Stage stage = (Stage) playerCountField.getScene().getWindow();
-            stage.setScene(gameScene);  // Set the new scene
+            stage.setScene(scene);
         } catch (IOException e) {
-            showAlert(Alert.AlertType.ERROR, "Error loading the game screen: " + e.getMessage());
+            AlertHelper.showAlert(Alert.AlertType.ERROR, "Error loading the game screen: " + e.getMessage());
         }
-    }
-
-    private void showAlert(Alert.AlertType type, String message) {
-        Alert alert = new Alert(type, message);
-        alert.show();
     }
 }

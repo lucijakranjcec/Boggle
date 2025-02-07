@@ -1,19 +1,17 @@
 package hr.tvz.boggle.boggleapplication;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.input.MouseEvent;
-import javafx.util.Duration;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+
 import java.io.IOException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class BoggleController {
 
@@ -30,10 +28,10 @@ public class BoggleController {
     private Label timerLabel;
 
     @FXML
-    private Label wordsCorrect;
+    private Label wordCounterLabel;
 
     @FXML
-    private Label wordCounterLabel;
+    private Label wordsCorrect;
 
     @FXML
     private VBox nextPlayerBox;
@@ -60,236 +58,227 @@ public class BoggleController {
     private Dictionary dictionary;
 
     private Set<Label> selectedCells;
+
+    // Builds the current word from selected letters
     private StringBuilder currentWord;
+
     private Label lastSelectedCell;
 
     private List<Player> players;
     private int currentPlayerIndex = 0;
-    private int timeLeft = 10;  // 1 minute timer
-    private Timeline timeline;
 
-    private boolean gameInProgress = false;
+    // Use GameTimer for timer logic; initial time is 10 seconds.
+    private GameTimer gameTimer;
+    private static final int INITIAL_TIME = 10;
 
+    // Called automatically after the FXML loads
     public void initialize() {
         try {
             dictionary = new Dictionary("src/main/resources/words.txt");
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Unable to load dictionary.");
+            AlertHelper.showAlert(Alert.AlertType.ERROR, "Unable to load dictionary.");
             return;
         }
-
         submitButton.setOnAction(e -> handleWordSubmit());
         clearButton.setOnAction(e -> handleClearSelection());
         nextPlayerButton.setOnAction(e -> handleNextPlayer());
-
         selectedCells = new HashSet<>();
         currentWord = new StringBuilder();
-
         nextPlayerBox.setVisible(false);
     }
 
+    // Called from the player setup screen to pass in the players
     public void setPlayers(List<Player> players) {
         this.players = players;
         updatePlayerUI();
     }
 
+    // Update the UI to show the current player's info
     private void updatePlayerUI() {
         Player currentPlayer = players.get(currentPlayerIndex);
         wordCounterLabel.setText(String.valueOf(currentPlayer.getWordCount()));
         currentPlayerLabel.setText("Current Player: " + currentPlayer.getName());
     }
 
+    // Start the game by setting up the board and timer
     public void startGame() {
-        // Initialize the board and start the game
-        board = new Board();
-        board.generateBoard();  // Ensure the board is populated with random letters
-        gameInProgress = true;
+        board = new Board(); // The constructor already generates the board
         updateBoardUI();
         startTimer();
     }
 
+    // Initialize and start the GameTimer
     private void startTimer() {
-        timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-            if (timeLeft > 0) {
-                timeLeft--;
-                timerLabel.setText("Time: " + timeLeft + "s");
-            } else {
-                timeline.stop(); // Zaustavi timer kada dođe do 0
-                endTurn(); // Pozovi kraj poteza
+        gameTimer = new GameTimer(INITIAL_TIME, new GameTimer.TimerListener() {
+            @Override
+            public void onTick(int secondsLeft) {
+                timerLabel.setText("Time: " + secondsLeft + "s");
             }
-        }));
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
+            @Override
+            public void onTimeEnd() {
+                endTurn();
+            }
+        });
+        gameTimer.start();
     }
 
     private void endTurn() {
-        gameInProgress = false;
-
         if (currentPlayerIndex == players.size() - 1) {
-            // Hide all UI elements and remove them from the layout (no empty space)
+            // Game over: hide game elements and show final results
             boardGrid.setVisible(false);
-            boardGrid.setManaged(false);  // Removes boardGrid from layout
-
+            boardGrid.setManaged(false);
             submitButton.setVisible(false);
-            submitButton.setManaged(false);  // Removes submit button from layout
-
+            submitButton.setManaged(false);
             clearButton.setVisible(false);
-            clearButton.setManaged(false);  // Removes clear button from layout
-
+            clearButton.setManaged(false);
             timerLabel.setVisible(false);
-            timerLabel.setManaged(false);  // Removes timer label from layout
-
-            wordsCorrect.setVisible(false);
-            wordsCorrect.setManaged(false);  // Removes words label from layout
-
+            timerLabel.setManaged(false);
             wordCounterLabel.setVisible(false);
-            wordCounterLabel.setManaged(false);  // Removes word counter label from layout
-
+            wordCounterLabel.setManaged(false);
+            wordsCorrect.setVisible(false);
+            wordsCorrect.setManaged(false);
             nextPlayerBox.setVisible(false);
-            nextPlayerBox.setManaged(false);  // Removes next player box from layout
-
+            nextPlayerBox.setManaged(false);
             nextPlayerButton.setVisible(false);
-            nextPlayerButton.setManaged(false);  // Removes next player button from layout
+            nextPlayerButton.setManaged(false);
 
-            // Show the results in the game over box
+            // Show game over box with results
             gameOverBox.setVisible(true);
-            gameOverBox.setManaged(true);  // Ensure game over box is visible and managed
-
+            gameOverBox.setManaged(true);
             displayGameResults();
         } else {
-            // Move to the next player
-            currentPlayerIndex++;  // Increment the player index
-            updatePlayerUI();  // Update the UI for the new player
-
-            // Update the nextPlayerLabel with the next player's name
+            // Switch to the next player
+            currentPlayerIndex++;
+            updatePlayerUI();
             nextPlayerLabel.setText("Next Player: " + players.get(currentPlayerIndex).getName());
-
-            nextPlayerBox.setVisible(true);  // Make the "Next Player" box visible
-            nextPlayerButton.setDisable(false);  // Enable the "Next Player" button
-            gameOverBox.setVisible(false);  // Hide the game over box
+            nextPlayerBox.setVisible(true);
+            nextPlayerButton.setDisable(false);
+            gameOverBox.setVisible(false);
         }
     }
 
     private void displayGameResults() {
-        String winnerDetails = getWinnerDetails();
-        winnerLabel.setText(winnerDetails);  // Display the winner
-
-        displayScores();  // Update the scoreLabel with the final scores
+        winnerLabel.setText(getWinnerDetails());
+        scoreLabel.setText(getScores());
     }
 
     private String getWinnerDetails() {
-        Player winner = players.get(0);
+        int highestScore = 0;
+        // Find the highest score
         for (Player player : players) {
-            if (player.getWordCount() > winner.getWordCount()) {
-                winner = player;
+            if (player.getWordCount() > highestScore) {
+                highestScore = player.getWordCount();
             }
         }
-        return "Winner: " + winner.getName();
+        int count = 0;
+        // Count how many players have that highest score
+        for (Player player : players) {
+            if (player.getWordCount() == highestScore) {
+                count++;
+            }
+        }
+        if (count > 1) {
+            return "Winner: It's a draw!";
+        } else {
+            // Return the name of the player with the highest score
+            for (Player player : players) {
+                if (player.getWordCount() == highestScore) {
+                    return "Winner: " + player.getName();
+                }
+            }
+        }
+        return "Winner: Unknown"; // Fallback (should not occur)
     }
 
-    private void displayScores() {
+    // Create a string with all players' scores
+    private String getScores() {
         StringBuilder scores = new StringBuilder();
         for (Player player : players) {
-            scores.append(player.getName()).append(": ").append(player.getWordCount()).append(" points\n");
+            scores.append(player.getName())
+                    .append(": ")
+                    .append(player.getWordCount())
+                    .append(" points\n");
         }
-        scoreLabel.setText("Final Scores:\n" + scores.toString());
+        return "Final Scores:\n" + scores;
     }
 
     private void resetForNextPlayer() {
-        timeLeft = 10;
-        timerLabel.setText("Time: " + timeLeft + "s");
-
+        // Reset the timer
+        if (gameTimer != null) {
+            gameTimer.stop();
+            gameTimer.reset(INITIAL_TIME);
+        }
+        timerLabel.setText("Time: " + INITIAL_TIME + "s");
         selectedCells.clear();
         currentWord.setLength(0);
-
-        board.generateBoard(); // Generira novu ploču s novim slovima
-        updateBoardUI();       // Ažurira UI s novim slovima
+        board.generateBoard(); // Get new letters for the board
+        updateBoardUI();
         updatePlayerUI();
-
-        gameInProgress = true;
-        startTimer(); // Ponovno pokreni timer
+        startTimer();
     }
 
     @FXML
     private void handleNextPlayer() {
-        nextPlayerBox.setVisible(false); // Sakrij obavijest
-        nextPlayerButton.setDisable(true); // Onemogući dugme dok se ne završi krug
-
-        if (currentPlayerIndex < players.size() - 1) {
-            resetForNextPlayer();
-        }
+        nextPlayerBox.setVisible(false);
+        nextPlayerButton.setDisable(true);
+        resetForNextPlayer();
     }
 
+    // Update the board UI with the current letters
     private void updateBoardUI() {
         boardGrid.getChildren().clear();
         char[][] boardData = board.getBoard();
-
-        // Log the board data to check if the letters are being retrieved correctly
-        System.out.println("Board Data:");
-        for (char[] row : boardData) {
-            System.out.println(Arrays.toString(row));  // Debug output to check letters
-        }
-
-        if (boardData == null) {
-            showAlert(Alert.AlertType.ERROR, "Board data is null.");
-            return;
-        }
-
         for (int i = 0; i < boardData.length; i++) {
             for (int j = 0; j < boardData[i].length; j++) {
-                // Log the position and letter for each cell being added
-                System.out.println("Adding cell at (" + i + ", " + j + ") with letter: " + boardData[i][j]);
-
+                // Create a cell label for each letter
                 Label cell = new Label(" " + boardData[i][j] + " ");
-                cell.setStyle("-fx-border-color: black; -fx-padding: 15px; -fx-font-size: 24px; -fx-alignment: center; -fx-background-color: #ecf0f1;");
-                if (selectedCells.contains(cell)) {
-                    cell.setStyle("-fx-background-color: red; -fx-border-color: black; -fx-padding: 15px; -fx-font-size: 24px; -fx-alignment: center;");
-                }
-
+                cell.setStyle("-fx-border-color: black; -fx-padding: 15px; -fx-font-size: 24px; " +
+                        "-fx-alignment: center; -fx-background-color: #ecf0f1;");
                 cell.setOnMouseClicked(this::handleCellClick);
                 boardGrid.add(cell, j, i);
-
-                // Log after adding each cell to the GridPane
-                System.out.println("Cell added to grid at (" + i + ", " + j + ")");
             }
         }
     }
 
-
     private void handleCellClick(MouseEvent event) {
         Label cell = (Label) event.getSource();
-        String currentLetter = cell.getText().trim();
+        String letter = cell.getText().trim();
 
+        // If there is already a cell selected, check if the new cell is adjacent
         if (lastSelectedCell != null) {
             int lastRow = GridPane.getRowIndex(lastSelectedCell);
             int lastCol = GridPane.getColumnIndex(lastSelectedCell);
             int currentRow = GridPane.getRowIndex(cell);
             int currentCol = GridPane.getColumnIndex(cell);
-
             if (Math.abs(lastRow - currentRow) <= 1 && Math.abs(lastCol - currentCol) <= 1) {
-                addCellToSelection(cell, currentLetter);
+                addCellToSelection(cell, letter);
             } else {
-                showAlert(Alert.AlertType.WARNING, "Please select adjacent letters.");
+                AlertHelper.showAlert(Alert.AlertType.WARNING, "Please select adjacent letters.");
             }
         } else {
-            addCellToSelection(cell, currentLetter);
+            addCellToSelection(cell, letter);
         }
     }
 
-    private void addCellToSelection(Label cell, String currentLetter) {
+    private void addCellToSelection(Label cell, String letter) {
         if (selectedCells.contains(cell)) {
             selectedCells.remove(cell);
-            currentWord.deleteCharAt(currentWord.length() - 1);
-            cell.setStyle("-fx-background-color: #ecf0f1; -fx-border-color: black; -fx-padding: 15px; -fx-font-size: 24px; -fx-alignment: center;");
-            lastSelectedCell = (selectedCells.isEmpty()) ? null : (Label) selectedCells.toArray()[selectedCells.size() - 1];
+            if (currentWord.length() > 0) {
+                currentWord.deleteCharAt(currentWord.length() - 1);
+            }
+            // Reset cell style to default
+            cell.setStyle("-fx-background-color: #ecf0f1; -fx-border-color: black; -fx-padding: 15px; " +
+                    "-fx-font-size: 24px; -fx-alignment: center;");
+            lastSelectedCell = selectedCells.isEmpty() ? null : (Label) selectedCells.toArray()[selectedCells.size() - 1];
         } else {
             selectedCells.add(cell);
-            currentWord.append(currentLetter);
-            cell.setStyle("-fx-background-color: red; -fx-border-color: black; -fx-padding: 15px; -fx-font-size: 24px; -fx-alignment: center;");
+            currentWord.append(letter);
+            // Change cell style to indicate selection
+            cell.setStyle("-fx-background-color: red; -fx-border-color: black; -fx-padding: 15px; " +
+                    "-fx-font-size: 24px; -fx-alignment: center;");
             lastSelectedCell = cell;
         }
-
         System.out.println("Current word: " + currentWord.toString());
     }
 
@@ -300,34 +289,29 @@ public class BoggleController {
 
         if (dictionary.isValidWord(word)) {
             if (currentPlayer.hasFoundWord(word)) {
-                showAlert(Alert.AlertType.WARNING, "Already found this word!");
+                AlertHelper.showAlert(Alert.AlertType.WARNING, "Already found this word!");
             } else {
                 currentPlayer.incrementWordCount();
                 currentPlayer.addFoundWord(word);
                 wordCounterLabel.setText(String.valueOf(currentPlayer.getWordCount()));
             }
         } else {
-            showAlert(Alert.AlertType.ERROR, "Invalid word!");
+            AlertHelper.showAlert(Alert.AlertType.ERROR, "Invalid word!");
         }
-
-        currentWord.setLength(0);
-        for (Label cell : selectedCells) {
-            cell.setStyle("-fx-background-color: #ecf0f1; -fx-border-color: black; -fx-padding: 15px; -fx-font-size: 24px; -fx-alignment: center;");
-        }
-        selectedCells.clear();
-        lastSelectedCell = null;
-    }
-
-    private void showAlert(Alert.AlertType type, String message) {
-        Alert alert = new Alert(type, message);
-        alert.show();
+        clearSelection();
     }
 
     @FXML
     private void handleClearSelection() {
+        clearSelection();
+    }
+
+    // Helper method to clear the current cell selection and word
+    private void clearSelection() {
         currentWord.setLength(0);
         for (Label cell : selectedCells) {
-            cell.setStyle("-fx-background-color: #ecf0f1; -fx-border-color: black; -fx-padding: 15px; -fx-font-size: 24px; -fx-alignment: center;");
+            cell.setStyle("-fx-background-color: #ecf0f1; -fx-border-color: black; -fx-padding: 15px; " +
+                    "-fx-font-size: 24px; -fx-alignment: center;");
         }
         selectedCells.clear();
         lastSelectedCell = null;
