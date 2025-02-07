@@ -32,4 +32,8 @@ public class Board {
     public char[][] getBoard() {
         return board;
     }
+
+    public void setBoard(char[][] newBoard) {
+        this.board = newBoard;
+    }
 }

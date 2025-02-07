@@ -1,5 +1,6 @@
 package hr.tvz.boggle.boggleapplication;
 
+import hr.tvz.boggle.util.DialogUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -25,6 +26,9 @@ public class PlayerSetupController {
     @FXML
     private Button startGameButton;
 
+    @FXML
+    private Button loadGameButton; // NEW: Button to load a saved game
+
     // Called when the player count field changes
     public void onPlayerCountChange() {
         playerNamesBox.getChildren().clear();
@@ -32,11 +36,11 @@ public class PlayerSetupController {
         try {
             count = Integer.parseInt(playerCountField.getText());
         } catch (NumberFormatException e) {
-            AlertHelper.showAlert(Alert.AlertType.WARNING, "Please enter a valid number.");
+            DialogUtils.showAlert(Alert.AlertType.WARNING, "Please enter a valid number.");
             return;
         }
         if (count < 2 || count > 5) {
-            AlertHelper.showAlert(Alert.AlertType.WARNING, "Number of players must be between 2 and 5.");
+            DialogUtils.showAlert(Alert.AlertType.WARNING, "Number of players must be between 2 and 5.");
             return;
         }
         // Create a text field for each player name and add a listener
@@ -65,7 +69,7 @@ public class PlayerSetupController {
         startGameButton.setDisable(!allFilled);
     }
 
-    // Start the game by collecting player names and loading the game screen
+    // Start a new game by collecting player names and loading the game screen
     @FXML
     private void startGame() {
         int count = Integer.parseInt(playerCountField.getText());
@@ -86,7 +90,25 @@ public class PlayerSetupController {
             Stage stage = (Stage) playerCountField.getScene().getWindow();
             stage.setScene(scene);
         } catch (IOException e) {
-            AlertHelper.showAlert(Alert.AlertType.ERROR, "Error loading the game screen: " + e.getMessage());
+            DialogUtils.showAlert(Alert.AlertType.ERROR, "Error loading the game screen: " + e.getMessage());
+        }
+    }
+
+    // Load a saved game and transition to the game screen
+    @FXML
+    private void loadGame() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/hr/tvz/boggle/boggleapplication/game_screen.fxml"));
+            VBox root = loader.load();
+            BoggleController controller = loader.getController();
+            controller.loadGame(); // This method in BoggleController loads the serialized game state
+            Scene scene = new Scene(root, 700, 800);
+            scene.getStylesheets().add(Objects.requireNonNull(
+                    getClass().getResource("/hr/tvz/boggle/boggleapplication/style.css")).toExternalForm());
+            Stage stage = (Stage) playerCountField.getScene().getWindow();
+            stage.setScene(scene);
+        } catch (IOException e) {
+            DialogUtils.showAlert(Alert.AlertType.ERROR, "Error loading saved game: " + e.getMessage());
         }
     }
 }

@@ -1,9 +1,12 @@
 package hr.tvz.boggle.boggleapplication;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Player {
+public class Player implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String name;
     private int wordCount;
     private Set<String> foundWords;

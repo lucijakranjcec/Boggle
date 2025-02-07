@@ -1,4 +1,4 @@
-package hr.tvz.boggle.boggleapplication;
+package hr.tvz.boggle.util;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;

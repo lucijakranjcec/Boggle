@@ -8,20 +8,21 @@
 <VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="hr.tvz.boggle.boggleapplication.PlayerSetupController"
       spacing="20" alignment="TOP_CENTER" styleClass="main-container" stylesheets="@style.css">
 
-    <!-- Player Setup Section -->
+    <!-- Player Setup Title -->
     <Label text="Enter number and names of players" styleClass="player-setup-label"/>
+
+    <!-- Number of Players Input -->
     <HBox spacing="10" alignment="CENTER">
         <Label text="Number of Players:" styleClass="number-of-players-label"/>
         <TextField fx:id="playerCountField" promptText="Enter number of players" onAction="#onPlayerCountChange" styleClass="input-field"/>
     </HBox>
 
-
     <!-- Dynamically generated player name inputs -->
     <VBox fx:id="playerNamesBox" spacing="15" alignment="CENTER"/>
 
-    <!-- Start Game Button -->
+    <!-- Navigation Buttons: Start New Game and Load Saved Game -->
     <HBox spacing="10" alignment="CENTER">
         <Button fx:id="startGameButton" text="Start Game" onAction="#startGame" styleClass="action-button" disable="true"/>
+        <Button fx:id="loadGameButton" text="Load Game" onAction="#loadGame" styleClass="nav-link"/>
     </HBox>
 </VBox>
-
