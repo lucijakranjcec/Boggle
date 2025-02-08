@@ -35,12 +35,6 @@
         <Button fx:id="clearButton" text="Clear Selection" onAction="#handleClearSelection" styleClass="action-button"/>
     </HBox>
 
-    <!-- Next Player Notification -->
-    <VBox fx:id="nextPlayerBox" spacing="20" alignment="CENTER" visible="false" styleClass="next-player-box">
-        <Label fx:id="nextPlayerLabel" styleClass="next-player-label"/>
-        <Button text="Continue" fx:id="nextPlayerButton" onAction="#handleNextPlayer" styleClass="action-button"/>
-    </VBox>
-
     <!-- Game Over UI -->
     <VBox fx:id="gameOverBox" alignment="CENTER" spacing="10" visible="false">
         <Label fx:id="winnerLabel" text="Winner: " />

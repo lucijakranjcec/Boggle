@@ -1,4 +1,4 @@
-package hr.tvz.boggle.boggleapplication;
+package hr.tvz.boggle.core;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
