@@ -1,6 +1,6 @@
 package hr.tvz.boggle.util;
 
-import hr.tvz.boggle.boggleapplication.BoggleApplication;
+import hr.tvz.boggle.BoggleApplication;
 import hr.tvz.boggle.core.Player;
 import hr.tvz.boggle.model.GameState;
 import hr.tvz.boggle.model.PlayerType;

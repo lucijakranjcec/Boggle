@@ -7,14 +7,15 @@
 
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TextArea?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="hr.tvz.boggle.boggleapplication.BoggleController"
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="hr.tvz.boggle.BoggleController"
       spacing="20" styleClass="main-container">
 
     <HBox alignment="CENTER_LEFT" spacing="20" styleClass="nav-bar">
-        <Button text="New Game" onAction="#handleNewGame" styleClass="nav-link"/>
-        <Button text="Save Game" onAction="#saveGame" styleClass="nav-link"/>
-        <Button text="Load Game" onAction="#loadGame" styleClass="nav-link"/>
-        <Button text="Generate documentation" onAction="#generateHTMLDocumentation" styleClass="nav-link"/>
+        <Button text="New game" onAction="#handleNewGame" styleClass="nav-link"/>
+        <Button text="Save game" onAction="#saveGame" styleClass="nav-link"/>
+        <Button text="Load game" onAction="#loadGame" styleClass="nav-link"/>
+        <Button text="Replay game" onAction="#replayGame" styleClass="nav-link"/>
+        <Button text="Documentation" onAction="#generateHTMLDocumentation" styleClass="nav-link"/>
     </HBox>
 
     <Label fx:id="currentPlayerLabel" text="Current Player: Player 1" styleClass="current-player-label"/>
@@ -29,10 +30,8 @@
         <Label fx:id="lastGameMoveLabel" text="Last game move: " styleClass="last-move-label"/>
     </HBox>
 
-    <!-- Game Grid -->
     <GridPane fx:id="boardGrid" alignment="center" hgap="10" vgap="10" styleClass="grid-pane"/>
 
-    <!-- Action Buttons -->
     <HBox spacing="20" alignment="center" styleClass="button-container">
         <Button fx:id="submitButton" text="Submit Word" onAction="#handleWordSubmit" styleClass="action-button"/>
         <Button fx:id="clearButton" text="Clear Selection" onAction="#handleClearSelection" styleClass="action-button"/>
@@ -43,7 +42,10 @@
         <Button fx:id="sendChatButton" text="Send chat message" onAction="#sendChatMessage" />
     </HBox>
 
-    <TextArea fx:id="chatTextArea"  />
+    <HBox spacing="20" alignment="center">
+        <TextArea fx:id="chatTextArea" styleClass="textarea" />
+        <TextArea fx:id="replayTextArea" styleClass="textarea" />
+    </HBox>
 
     <VBox fx:id="gameOverBox" alignment="CENTER" spacing="10" visible="false">
         <Label fx:id="winnerLabel" text="Winner: " />

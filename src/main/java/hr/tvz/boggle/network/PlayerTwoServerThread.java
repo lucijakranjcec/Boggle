@@ -1,7 +1,7 @@
 package hr.tvz.boggle.network;
 
-import hr.tvz.boggle.boggleapplication.BoggleApplication;
-import hr.tvz.boggle.boggleapplication.BoggleController;
+import hr.tvz.boggle.BoggleApplication;
+import hr.tvz.boggle.BoggleController;
 import hr.tvz.boggle.model.GameState;
 import javafx.application.Platform;
 

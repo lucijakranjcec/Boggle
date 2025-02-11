@@ -1,4 +1,4 @@
-package hr.tvz.boggle.boggleapplication;
+package hr.tvz.boggle;
 
 import hr.tvz.boggle.exception.WrongPlayerNameException;
 import hr.tvz.boggle.model.PlayerType;
@@ -7,12 +7,10 @@ import hr.tvz.boggle.network.PlayerTwoServerThread;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 public class BoggleApplication extends Application {
 

@@ -1,4 +1,4 @@
-package hr.tvz.boggle.boggleapplication;
+package hr.tvz.boggle;
 
 import hr.tvz.boggle.chat.ChatService;
 import hr.tvz.boggle.core.Board;
@@ -29,8 +29,10 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class BoggleController {
 
@@ -47,11 +49,13 @@ public class BoggleController {
     @FXML private TextField chatMessageTextField;
     @FXML private TextArea chatTextArea;
     @FXML private Button sendChatButton;
-    @FXML public Label lastGameMoveLabel;
+    @FXML private Label lastGameMoveLabel;
+    @FXML private TextArea replayTextArea;
 
     private Board board;
     private Dictionary dictionary;
     private List<Player> players;
+    List<GameMove> gameMoves = new ArrayList<>();
     private int currentPlayerIndex = 0;
     private GameTimer gameTimer;
     private static final int INITIAL_TIME = 20;
@@ -103,6 +107,9 @@ public class BoggleController {
             chatTextArea.setVisible(false);
             chatMessageTextField.setVisible(false);
             sendChatButton.setVisible(false);
+            chatTextArea.setManaged(false);
+            chatMessageTextField.setManaged(false);
+            sendChatButton.setManaged(false);
         }
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), e -> Platform.runLater(new GetLastGameMoveThread(lastGameMoveLabel))));
         timeline.setCycleCount(Animation.INDEFINITE);
@@ -172,7 +179,7 @@ public class BoggleController {
         chatTextArea.setVisible(false); chatTextArea.setManaged(false);
         sendChatButton.setVisible(false); chatTextArea.setManaged(false);
         lastGameMoveLabel.setVisible(false); lastGameMoveLabel.setManaged(false);
-
+        replayTextArea.setVisible(false); replayTextArea.setManaged(false);
         gameOverBox.setVisible(true); gameOverBox.setManaged(true);
         displayGameResults();
     }
@@ -226,8 +233,7 @@ public class BoggleController {
         controller.updatePlayerUI();
     }
 
-    @FXML
-    private void handleNewGame() {
+    public void handleNewGame() {
         if (gameTimer != null) { gameTimer.stop(); }
         roundNumber = 0;
         if (BoggleApplication.player.equals(PlayerType.SINGLE_PLAYER)) {
@@ -263,8 +269,7 @@ public class BoggleController {
         startTimer();
     }
 
-    @FXML
-    private void handleWordSubmit() {
+    public void handleWordSubmit() {
         String word = boardUIManager.getCurrentWord().toUpperCase();
         Player currentPlayer = players.get(currentPlayerIndex);
         if (dictionary.isValidWord(word)) {
@@ -281,13 +286,14 @@ public class BoggleController {
         boardUIManager.clearSelection();
 
         GameMove newGameMove = new GameMove(currentPlayer.getName(), word, LocalDateTime.now());
+        gameMoves.add(newGameMove);
+        XmlUtils.saveGameMovesToXml(gameMoves);
         SaveNewGameMoveThread saveNewGameMoveThread = new SaveNewGameMoveThread(newGameMove);
         Thread starter = new Thread(saveNewGameMoveThread);
         starter.start();
     }
 
-    @FXML
-    private void handleClearSelection() { boardUIManager.clearSelection(); }
+    public void handleClearSelection() { boardUIManager.clearSelection(); }
 
     public void saveGame() {
         if (gameTimer != null) { gameTimer.stop(); }
@@ -349,7 +355,6 @@ public class BoggleController {
         DialogUtils.showAlert(Alert.AlertType.INFORMATION, "Game was successfully loaded!");
     }
 
-    @FXML
     public void sendChatMessage() {
         Player currentPlayer = players.get(currentPlayerIndex);
         String chatMessage = chatMessageTextField.getText();
@@ -362,6 +367,26 @@ public class BoggleController {
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void replayGame() {
+        List<GameMove> gameMovesList = XmlUtils.readGameMovesFromXml();
+        AtomicInteger i = new AtomicInteger(0);
+
+        replayTextArea.clear();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm");
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), e -> {
+            GameMove gameMove = gameMovesList.get(i.get());
+            String formattedTime = gameMove.getLocalDateTime().format(formatter);
+            String moveText = "Player " + gameMove.getPlayerName() + " found \"" + gameMove.getWord()
+                    + "\" at " + formattedTime;
+            replayTextArea.appendText(moveText + "\n");
+            i.incrementAndGet();
+        }));
+        timeline.setCycleCount(gameMovesList.size());
+        timeline.playFromStart();
     }
 
     public void generateHTMLDocumentation() {

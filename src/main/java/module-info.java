@@ -5,9 +5,10 @@ module hr.tvz.boggle.boggleapplication {
     requires lombok;
     requires java.rmi;
     requires java.naming;
+    requires java.xml;
 
-    opens hr.tvz.boggle.boggleapplication to javafx.fxml;
-    exports hr.tvz.boggle.boggleapplication;
+    opens hr.tvz.boggle to javafx.fxml;
+    exports hr.tvz.boggle;
     exports hr.tvz.boggle.util;
     opens hr.tvz.boggle.util to javafx.fxml;
     exports hr.tvz.boggle.core;
