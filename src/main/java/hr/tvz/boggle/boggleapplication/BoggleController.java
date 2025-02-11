@@ -5,6 +5,7 @@ import hr.tvz.boggle.core.Board;
 import hr.tvz.boggle.core.Dictionary;
 import hr.tvz.boggle.core.Player;
 import hr.tvz.boggle.jndi.ConfigurationReader;
+import hr.tvz.boggle.model.ConfigurationKey;
 import hr.tvz.boggle.model.GameState;
 import hr.tvz.boggle.model.PlayerType;
 import hr.tvz.boggle.network.GameNetworkManager;
@@ -83,8 +84,9 @@ public class BoggleController {
 
         if (!BoggleApplication.player.equals(PlayerType.SINGLE_PLAYER)) {
             try {
-                String rmiPort = ConfigurationReader.getValue("rmi.port");
-                Registry registry = LocateRegistry.getRegistry("localhost", Integer.parseInt(rmiPort));
+                String rmiPort = ConfigurationReader.getValue(ConfigurationKey.RMI_PORT);
+                String serverName = ConfigurationReader.getValue(ConfigurationKey.RMI_HOST);
+                Registry registry = LocateRegistry.getRegistry(serverName, Integer.parseInt(rmiPort));
                 stub = (ChatService) registry.lookup(ChatService.REMOTE_OBJECT_NAME);
 
                 chatTextArea.setVisible(true);

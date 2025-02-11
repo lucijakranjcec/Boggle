@@ -25,13 +25,13 @@
 <p>private javafx.scene.control.Label timerLabel</p>
 <p>private javafx.scene.control.Label wordCounterLabel</p>
 <p>private javafx.scene.control.Label wordsCorrect</p>
-<p>private javafx.scene.layout.VBox nextPlayerBox</p>
-<p>private javafx.scene.control.Label nextPlayerLabel</p>
-<p>private javafx.scene.control.Button nextPlayerButton</p>
 <p>private javafx.scene.layout.VBox gameOverBox</p>
 <p>private javafx.scene.control.Label winnerLabel</p>
 <p>private javafx.scene.control.Label scoreLabel</p>
 <p>private javafx.scene.control.Label currentPlayerLabel</p>
+<p>private javafx.scene.control.TextField chatMessageTextField</p>
+<p>private javafx.scene.control.TextArea chatTextArea</p>
+<p>private javafx.scene.control.Button sendChatButton</p>
 <p>private hr.tvz.boggle.core.Board board</p>
 <p>private hr.tvz.boggle.core.Dictionary dictionary</p>
 <p>private java.util.List players</p>
@@ -40,6 +40,7 @@
 <p>private static final int INITIAL_TIME</p>
 <p>private int roundNumber</p>
 <p>private final int maxRounds</p>
+<p>private static hr.tvz.boggle.chat.ChatService stub</p>
 <p>private hr.tvz.boggle.ui.BoardUIManager boardUIManager</p>
 <p>private static hr.tvz.boggle.boggleapplication.BoggleController instance</p>
 <h3>Constructors:</h3>
@@ -47,26 +48,46 @@
 <h3>Methods:</h3>
 <p>public static hr.tvz.boggle.boggleapplication.BoggleController getInstance()</p>
 <p>public void initialize()</p>
-<p>public static void updateGameStateFromNetwork(hr.tvz.boggle.model.GameState arg0)</p>
-<p>private void handleNewGame()</p>
 <p>private void handleWordSubmit()</p>
-<p>private void handleNextPlayer()</p>
+<p>public void sendChatMessage()</p>
 <p>private void sendGameState()</p>
-<p>private void updatePlayerUI()</p>
 <p>private void resetForNextPlayer()</p>
-<p>private void displayGameResults()</p>
 <p>private void showGameOverScreen()</p>
-<p>private void enableUI()</p>
-<p>private void startTimer()</p>
-<p>private void disableUI()</p>
-<p>private void endTurn()</p>
-<p>public void saveGame()</p>
-<p>public void loadGame()</p>
-<p>private void handleClearSelection()</p>
-<p>public void generateHTMLDocumentation()</p>
-<p>private void lambda$initialize$2(javafx.event.ActionEvent arg0)</p>
+<p>private void displayGameResults()</p>
+<p>private void updatePlayerUI()</p>
+<p>public static void updateGameStateFromNetwork(hr.tvz.boggle.model.GameState arg0)</p>
 <p>private void lambda$initialize$1(javafx.event.ActionEvent arg0)</p>
+<p>public void generateHTMLDocumentation()</p>
+<p>private void handleClearSelection()</p>
+<p>private void lambda$initialize$2(javafx.event.ActionEvent arg0)</p>
 <p>private void lambda$initialize$0(javafx.event.ActionEvent arg0)</p>
+<p>private void disableUI(java.lang.Boolean arg0)</p>
+<p>private void startTimer()</p>
+<p>private void endTurn()</p>
+<p>public void loadGame()</p>
+<p>public void saveGame()</p>
+<p>private void handleNewGame()</p>
+<h2>public hr.tvz.boggle.chat.ChatServer</h2>
+<h3>Fields:</h3>
+<p>private static final int RANDOM_PORT_HINT</p>
+<h3>Constructors:</h3>
+<p>public hr.tvz.boggle.chat.ChatServer()</p>
+<h3>Methods:</h3>
+<p>public static void main([Ljava.lang.String; arg0)</p>
+<h2>public abstract interface hr.tvz.boggle.chat.ChatService</h2>
+<h3>Fields:</h3>
+<p>public static final java.lang.String REMOTE_OBJECT_NAME</p>
+<h3>Methods:</h3>
+<p>public abstract void sendChatMessage(java.lang.String arg0)</p>
+<p>public abstract java.util.List returnChatHistory()</p>
+<h2>public hr.tvz.boggle.chat.ChatServiceImplementation</h2>
+<h3>Fields:</h3>
+<p>private java.util.List chatMessagesHistory</p>
+<h3>Constructors:</h3>
+<p>public hr.tvz.boggle.chat.ChatServiceImplementation()</p>
+<h3>Methods:</h3>
+<p>public void sendChatMessage(java.lang.String arg0)</p>
+<p>public java.util.List returnChatHistory()</p>
 <h2>public hr.tvz.boggle.core.Board</h2>
 <h3>Fields:</h3>
 <p>private final [Ljava.lang.String; dice</p>
@@ -75,8 +96,8 @@
 <p>public hr.tvz.boggle.core.Board()</p>
 <h3>Methods:</h3>
 <p>public void generateBoard()</p>
-<p>public [[C getBoard()</p>
 <p>public void setBoard([[C arg0)</p>
+<p>public [[C getBoard()</p>
 <h2>public hr.tvz.boggle.core.Dictionary</h2>
 <h3>Fields:</h3>
 <p>private java.util.Set words</p>
@@ -95,10 +116,10 @@
 <p>public hr.tvz.boggle.core.Player(java.lang.String arg0)</p>
 <h3>Methods:</h3>
 <p>public java.lang.String getName()</p>
-<p>public boolean hasFoundWord(java.lang.String arg0)</p>
-<p>public void incrementWordCount()</p>
 <p>public void addFoundWord(java.lang.String arg0)</p>
 <p>public int getWordCount()</p>
+<p>public boolean hasFoundWord(java.lang.String arg0)</p>
+<p>public void incrementWordCount()</p>
 <h2>public hr.tvz.boggle.exception.WrongPlayerNameException</h2>
 <h3>Constructors:</h3>
 <p>public hr.tvz.boggle.exception.WrongPlayerNameException()</p>
@@ -106,6 +127,31 @@
 <p>public hr.tvz.boggle.exception.WrongPlayerNameException(java.lang.String arg0, java.lang.Throwable arg1)</p>
 <p>public hr.tvz.boggle.exception.WrongPlayerNameException(java.lang.Throwable arg0)</p>
 <p>public hr.tvz.boggle.exception.WrongPlayerNameException(java.lang.String arg0, java.lang.Throwable arg1, boolean arg2, boolean arg3)</p>
+<h2>public hr.tvz.boggle.jndi.ConfigurationReader</h2>
+<h3>Fields:</h3>
+<p>private static final java.lang.String PROVIDER_URL</p>
+<h3>Constructors:</h3>
+<p>public hr.tvz.boggle.jndi.ConfigurationReader()</p>
+<h3>Methods:</h3>
+<p>public static java.lang.String getValue(hr.tvz.boggle.model.ConfigurationKey arg0)</p>
+<p>private static java.util.Hashtable configureEnvironment()</p>
+<h2>public hr.tvz.boggle.jndi.InitialDirContextCloseable</h2>
+<h3>Constructors:</h3>
+<p>public hr.tvz.boggle.jndi.InitialDirContextCloseable(java.util.Hashtable arg0)</p>
+<h2>public final hr.tvz.boggle.model.ConfigurationKey</h2>
+<h3>Fields:</h3>
+<p>public static final hr.tvz.boggle.model.ConfigurationKey RMI_HOST</p>
+<p>public static final hr.tvz.boggle.model.ConfigurationKey RMI_PORT</p>
+<p>public static final hr.tvz.boggle.model.ConfigurationKey CHAT_HOST</p>
+<p>private java.lang.String key</p>
+<p>private static final [Lhr.tvz.boggle.model.ConfigurationKey; $VALUES</p>
+<h3>Constructors:</h3>
+<p>private hr.tvz.boggle.model.ConfigurationKey(java.lang.String arg0, int arg1, java.lang.String arg2)</p>
+<h3>Methods:</h3>
+<p>public static [Lhr.tvz.boggle.model.ConfigurationKey; values()</p>
+<p>public static hr.tvz.boggle.model.ConfigurationKey valueOf(java.lang.String arg0)</p>
+<p>public java.lang.String getKey()</p>
+<p>private static [Lhr.tvz.boggle.model.ConfigurationKey; $values()</p>
 <h2>public hr.tvz.boggle.model.GameState</h2>
 <h3>Fields:</h3>
 <p>private static final long serialVersionUID</p>
@@ -115,23 +161,13 @@
 <p>private int remainingTime</p>
 <p>private int roundNumber</p>
 <h3>Constructors:</h3>
-<p>public hr.tvz.boggle.model.GameState()</p>
 <p>public hr.tvz.boggle.model.GameState([[Ljava.lang.String; arg0, int arg1, java.util.List arg2, int arg3, int arg4)</p>
 <h3>Methods:</h3>
-<p>public boolean equals(java.lang.Object arg0)</p>
-<p>public java.lang.String toString()</p>
-<p>public int hashCode()</p>
-<p>public int getRoundNumber()</p>
-<p>public [[Ljava.lang.String; getBoardState()</p>
 <p>public int getRemainingTime()</p>
-<p>public void setBoardState([[Ljava.lang.String; arg0)</p>
-<p>public void setRemainingTime(int arg0)</p>
-<p>public void setRoundNumber(int arg0)</p>
-<p>public java.util.List getPlayers()</p>
+<p>public [[Ljava.lang.String; getBoardState()</p>
+<p>public int getRoundNumber()</p>
 <p>public int getCurrentPlayerIndex()</p>
-<p>protected boolean canEqual(java.lang.Object arg0)</p>
-<p>public void setPlayers(java.util.List arg0)</p>
-<p>public void setCurrentPlayerIndex(int arg0)</p>
+<p>public java.util.List getPlayers()</p>
 <h2>public final hr.tvz.boggle.model.PlayerType</h2>
 <h3>Fields:</h3>
 <p>public static final hr.tvz.boggle.model.PlayerType PLAYER_ONE</p>
@@ -154,16 +190,16 @@
 <p>public hr.tvz.boggle.network.PlayerOneServerThread()</p>
 <h3>Methods:</h3>
 <p>public void run()</p>
-<p>private void lambda$run$0(java.net.Socket arg0)</p>
 <p>private void processClient(java.net.Socket arg0)</p>
+<p>private void lambda$run$0(java.net.Socket arg0)</p>
 <p>private static void lambda$processClient$1(hr.tvz.boggle.model.GameState arg0)</p>
 <h2>public hr.tvz.boggle.network.PlayerTwoServerThread</h2>
 <h3>Constructors:</h3>
 <p>public hr.tvz.boggle.network.PlayerTwoServerThread()</p>
 <h3>Methods:</h3>
 <p>public void run()</p>
-<p>private void lambda$run$0(java.net.Socket arg0)</p>
 <p>private void processClient(java.net.Socket arg0)</p>
+<p>private void lambda$run$0(java.net.Socket arg0)</p>
 <p>private static void lambda$processClient$1(hr.tvz.boggle.model.GameState arg0)</p>
 <h2>public hr.tvz.boggle.ui.BoardUIManager</h2>
 <h3>Fields:</h3>
@@ -174,11 +210,16 @@
 <h3>Constructors:</h3>
 <p>public hr.tvz.boggle.ui.BoardUIManager(javafx.scene.layout.GridPane arg0)</p>
 <h3>Methods:</h3>
-<p>public void updateBoardUI(hr.tvz.boggle.core.Board arg0)</p>
 <p>public void clearSelection()</p>
 <p>public java.lang.String getCurrentWord()</p>
-<p>private void handleCellClick(javafx.scene.input.MouseEvent arg0)</p>
+<p>public void updateBoardUI(hr.tvz.boggle.core.Board arg0)</p>
 <p>private void addCellToSelection(javafx.scene.control.Label arg0, java.lang.String arg1)</p>
+<p>private void handleCellClick(javafx.scene.input.MouseEvent arg0)</p>
+<h2>public hr.tvz.boggle.util.ChatUtils</h2>
+<h3>Constructors:</h3>
+<p>public hr.tvz.boggle.util.ChatUtils()</p>
+<h3>Methods:</h3>
+<p>public static void refreshChatTextArea(hr.tvz.boggle.chat.ChatService arg0, javafx.scene.control.TextArea arg1)</p>
 <h2>public hr.tvz.boggle.util.DialogUtils</h2>
 <h3>Constructors:</h3>
 <p>public hr.tvz.boggle.util.DialogUtils()</p>
@@ -188,17 +229,17 @@
 <h3>Constructors:</h3>
 <p>public hr.tvz.boggle.util.DocumentationUtils()</p>
 <h3>Methods:</h3>
-<p>private static boolean lambda$generateDocumentation$0(java.nio.file.Path arg0)</p>
-<p>private static boolean lambda$generateDocumentation$1(java.nio.file.Path arg0)</p>
 <p>public static void generateDocumentation()</p>
+<p>private static boolean lambda$generateDocumentation$1(java.nio.file.Path arg0)</p>
+<p>private static boolean lambda$generateDocumentation$0(java.nio.file.Path arg0)</p>
 <h2>public hr.tvz.boggle.util.GamePersistenceManager</h2>
 <h3>Fields:</h3>
 <p>private static final java.lang.String SAVE_FILE_PATH</p>
 <h3>Constructors:</h3>
 <p>public hr.tvz.boggle.util.GamePersistenceManager()</p>
 <h3>Methods:</h3>
-<p>public static void saveGame(hr.tvz.boggle.model.GameState arg0)</p>
 <p>public static hr.tvz.boggle.model.GameState loadGame()</p>
+<p>public static void saveGame(hr.tvz.boggle.model.GameState arg0)</p>
 <h2>public hr.tvz.boggle.util.GameResultsHelper</h2>
 <h3>Constructors:</h3>
 <p>public hr.tvz.boggle.util.GameResultsHelper()</p>

@@ -1,6 +1,7 @@
 package hr.tvz.boggle.chat;
 
 import hr.tvz.boggle.jndi.ConfigurationReader;
+import hr.tvz.boggle.model.ConfigurationKey;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -13,7 +14,7 @@ public class ChatServer {
 
     public static void main(String[] args) {
         try {
-            Integer rmiPort = Integer.parseInt(ConfigurationReader.getValue("rmi.port"));
+            Integer rmiPort = Integer.parseInt(ConfigurationReader.getValue(ConfigurationKey.RMI_PORT));
             Registry registry = LocateRegistry.createRegistry(rmiPort);
             ChatService remoteService = new ChatServiceImplementation();
             ChatService skeleton = (ChatService) UnicastRemoteObject.exportObject(remoteService, RANDOM_PORT_HINT);
