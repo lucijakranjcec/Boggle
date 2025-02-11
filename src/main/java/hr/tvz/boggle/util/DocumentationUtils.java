@@ -11,11 +11,6 @@ import java.util.List;
 
 public class DocumentationUtils {
 
-    /**
-     * Generates HTML documentation for all Java classes found in the specified directory.
-     * This method uses reflection to extract information about classes, their fields,
-     * constructors, and methods, then writes it to an HTML file.
-     */
     public static void generateDocumentation() {
 
         StringBuilder documentationGenerator = new StringBuilder();
@@ -28,33 +23,24 @@ public class DocumentationUtils {
                     .filter(p -> !p.getFileName().toString().equals("module-info.java"))
                     .toList();
 
-            // Iterate over each Java file found
             for (Path classPath : classNameList) {
-                // Find the index where the package name (starting with "hr") begins
                 int indexOfHr = classPath.toString().indexOf("hr");
-                // Extract the fully qualified class name from the file path
                 String fqcn = classPath.toString().substring(indexOfHr);
 
-                // Replace file separators with dots and remove the ".java" extension
                 fqcn = fqcn.replace('\\', '.');
                 fqcn = fqcn.substring(0, fqcn.length() - 5);
 
-                // Load the class using its fully qualified name
                 Class<?> documentationClass = Class.forName(fqcn);
-                // Get the class modifiers (e.g., public, abstract, etc.)
                 String classModifiers = Modifier.toString(documentationClass.getModifiers());
-                // Append the class header (including its modifiers and fully qualified name) to the HTML content
                 documentationGenerator.append("<h2>")
                         .append(classModifiers)
                         .append(" ")
                         .append(fqcn)
                         .append("</h2>\n");
 
-                // Retrieve all declared fields in the class
                 Field[] classVariables = documentationClass.getDeclaredFields();
                 if (classVariables.length > 0) {
                     documentationGenerator.append("<h3>Fields:</h3>\n");
-                    // For each field, document its modifiers, type, and name
                     for (Field field : classVariables) {
                         String modifiers = Modifier.toString(field.getModifiers());
                         documentationGenerator.append("<p>")

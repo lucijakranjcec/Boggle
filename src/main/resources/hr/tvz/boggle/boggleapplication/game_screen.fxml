@@ -10,7 +10,6 @@
 <VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="hr.tvz.boggle.boggleapplication.BoggleController"
       spacing="20" styleClass="main-container">
 
-    <!-- Navigation Bar -->
     <HBox alignment="CENTER_LEFT" spacing="20" styleClass="nav-bar">
         <Button text="New Game" onAction="#handleNewGame" styleClass="nav-link"/>
         <Button text="Save Game" onAction="#saveGame" styleClass="nav-link"/>
@@ -18,14 +17,16 @@
         <Button text="Generate documentation" onAction="#generateHTMLDocumentation" styleClass="nav-link"/>
     </HBox>
 
-    <!-- Current Player Info -->
     <Label fx:id="currentPlayerLabel" text="Current Player: Player 1" styleClass="current-player-label"/>
 
-    <!-- Timer and Word Counter -->
     <HBox spacing="20" alignment="CENTER" styleClass="timer-word-counter-container">
         <Label fx:id="timerLabel" text="Time: 60s" styleClass="timer-label" />
         <Label fx:id="wordsCorrect" text="Words Correct: " styleClass="counter-label"/>
         <Label fx:id="wordCounterLabel" text="0" styleClass="counter-value"/>
+    </HBox>
+
+    <HBox alignment="CENTER">
+        <Label fx:id="lastGameMoveLabel" text="Last game move: " styleClass="last-move-label"/>
     </HBox>
 
     <!-- Game Grid -->
@@ -44,8 +45,6 @@
 
     <TextArea fx:id="chatTextArea"  />
 
-
-    <!-- Game Over UI -->
     <VBox fx:id="gameOverBox" alignment="CENTER" spacing="10" visible="false">
         <Label fx:id="winnerLabel" text="Winner: " />
         <Label fx:id="scoreLabel" text="Final Scores: " />

@@ -1,5 +1,5 @@
 .main-container {
-    -fx-padding: 10px 20px;  /* Slightly smaller padding */
+    -fx-padding: 10px 20px;
     -fx-background-color: #1e1e1e;
     -fx-min-height: 600px;
 }
@@ -10,20 +10,19 @@
     -fx-pref-width: 100%;
 }
 
-/* Timer and Word Counter Container */
 .timer-word-counter-container {
     -fx-padding: 10px 0;
-    -fx-spacing: 16px;  /* reduced spacing */
+    -fx-spacing: 16px;
     -fx-alignment: center;
 }
 
-/* Timer and Counter Labels */
 .timer-label,
 .counter-label,
 .counter-value,
+.last-move-label,
 .current-player-label {
     -fx-font-family: "Segoe UI", sans-serif;
-    -fx-font-size: 18px;  /* reduced from 22px */
+    -fx-font-size: 18px;
     -fx-text-fill: #f0f0f0;
     -fx-padding: 8px;
 }
@@ -32,10 +31,9 @@
     -fx-text-fill: #ffcc00;
 }
 
-/* Navigation Links */
 .nav-link {
     -fx-padding: 8px 16px;
-    -fx-font-size: 16px;  /* slightly smaller */
+    -fx-font-size: 16px;
     -fx-text-fill: #dcdcdc;
     -fx-border: none;
     -fx-cursor: hand;
@@ -56,19 +54,18 @@
     -fx-background-color: #2b2b2b;
     -fx-border-color: #444;
     -fx-border-width: 2px;
-    -fx-padding: 20px;  /* reduced padding */
-    -fx-hgap: 10px;   /* reduced gap */
-    -fx-vgap: 10px;   /* reduced gap */
+    -fx-padding: 20px;
+    -fx-hgap: 10px;
+    -fx-vgap: 10px;
 }
 
-/* Action Buttons */
 .button-container {
-    -fx-padding: 20px 0 0 0;  /* reduced top padding */
+    -fx-padding: 20px 0 0 0;
 }
 
 .action-button {
     -fx-padding: 10px 20px;
-    -fx-font-size: 14px;  /* reduced font size */
+    -fx-font-size: 14px;
     -fx-background-color: #3a3a3a;
     -fx-text-fill: #dcdcdc;
     -fx-border-radius: 8px;
@@ -82,7 +79,6 @@
     -fx-text-fill: #ffffff;
 }
 
-/* Game Over UI */
 #gameOverBox {
     -fx-background-color: #2b2b2b;
     -fx-border-radius: 12px;
@@ -90,11 +86,10 @@
     -fx-alignment: center;
     -fx-spacing: 16px;
     -fx-pref-width: 400px;
-    -fx-effect: dropshadow(gaussian, #000000, 10, 0, 0, 0);
 }
 
 #winnerLabel {
-    -fx-font-size: 28px; /* reduced from 32px */
+    -fx-font-size: 28px;
     -fx-font-weight: bold;
     -fx-text-fill: #f0f0f0;
     -fx-font-family: "Segoe UI", sans-serif;
@@ -103,7 +98,7 @@
 }
 
 #scoreLabel {
-    -fx-font-size: 16px; /* reduced font size */
+    -fx-font-size: 16px;
     -fx-font-family: "Segoe UI", sans-serif;
     -fx-text-fill: #f0f0f0;
     -fx-text-alignment: left;
@@ -113,10 +108,9 @@
 /* Chat Styles */
 #chatTextArea {
     -fx-font-size: 16px;
-    -fx-min-height: 200px;   /* Make chat area bigger */
+    -fx-min-height: 150px;
     -fx-background-color: #333333;
     -fx-text-fill: black;
-    -fx-padding: 10px;
     -fx-border-color: #555555;
     -fx-border-width: 1px;
     -fx-border-radius: 4px;

@@ -9,13 +9,11 @@ import java.util.Set;
 public class Dictionary {
     private Set<String> words;
 
-    // Load words from the specified file
     public Dictionary(String filePath) throws IOException {
         words = new HashSet<>();
         loadWords(filePath);
     }
 
-    // Read each line from the file and add it to the set (in uppercase)
     private void loadWords(String filePath) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
         String line;

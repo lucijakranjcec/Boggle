@@ -6,9 +6,11 @@ import hr.tvz.boggle.core.Dictionary;
 import hr.tvz.boggle.core.Player;
 import hr.tvz.boggle.jndi.ConfigurationReader;
 import hr.tvz.boggle.model.ConfigurationKey;
+import hr.tvz.boggle.model.GameMove;
 import hr.tvz.boggle.model.GameState;
 import hr.tvz.boggle.model.PlayerType;
-import hr.tvz.boggle.network.GameNetworkManager;
+import hr.tvz.boggle.network.GetLastGameMoveThread;
+import hr.tvz.boggle.network.SaveNewGameMoveThread;
 import hr.tvz.boggle.ui.BoardUIManager;
 import hr.tvz.boggle.util.*;
 import javafx.animation.Animation;
@@ -21,11 +23,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import lombok.Getter;
-
+import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +47,7 @@ public class BoggleController {
     @FXML private TextField chatMessageTextField;
     @FXML private TextArea chatTextArea;
     @FXML private Button sendChatButton;
+    @FXML public Label lastGameMoveLabel;
 
     private Board board;
     private Dictionary dictionary;
@@ -52,13 +56,9 @@ public class BoggleController {
     private GameTimer gameTimer;
     private static final int INITIAL_TIME = 20;
     private int roundNumber = 0;
-    private final int maxRounds = 3; // Adjust as needed.
+    private final int NUMBER_OF_ROUNDS = 2;
     private static ChatService stub;
-
-    // Helper for board UI management.
     private BoardUIManager boardUIManager;
-
-    // Static instance for network updates.
     @Getter
     private static BoggleController instance;
     public BoggleController() { instance = this; }
@@ -70,11 +70,11 @@ public class BoggleController {
     public void initialize() {
         try {
             dictionary = new Dictionary("src/main/resources/words.txt");
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
             DialogUtils.showAlert(Alert.AlertType.ERROR, "Unable to load dictionary.");
-            return;
+            throw new RuntimeException(e);
         }
+
         submitButton.setOnAction(e -> handleWordSubmit());
         clearButton.setOnAction(e -> handleClearSelection());
 
@@ -104,6 +104,9 @@ public class BoggleController {
             chatMessageTextField.setVisible(false);
             sendChatButton.setVisible(false);
         }
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), e -> Platform.runLater(new GetLastGameMoveThread(lastGameMoveLabel))));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.playFromStart();
     }
 
     private void updatePlayerUI() {
@@ -127,7 +130,7 @@ public class BoggleController {
 
         if (BoggleApplication.player.equals(PlayerType.SINGLE_PLAYER)) {
             roundNumber++;
-            if (roundNumber >= maxRounds) {
+            if (roundNumber >= NUMBER_OF_ROUNDS) {
                 showGameOverScreen();
                 return;
             } else {
@@ -139,7 +142,7 @@ public class BoggleController {
         int nextIndex = (currentPlayerIndex + 1) % players.size();
         if (nextIndex == 0) {
             roundNumber++;
-            if (roundNumber >= maxRounds) {
+            if (roundNumber >= NUMBER_OF_ROUNDS) {
                 currentPlayerIndex = nextIndex;
                 sendGameState();
                 showGameOverScreen();
@@ -168,6 +171,7 @@ public class BoggleController {
         chatMessageTextField.setVisible(false); chatMessageTextField.setManaged(false);
         chatTextArea.setVisible(false); chatTextArea.setManaged(false);
         sendChatButton.setVisible(false); chatTextArea.setManaged(false);
+        lastGameMoveLabel.setVisible(false); lastGameMoveLabel.setManaged(false);
 
         gameOverBox.setVisible(true); gameOverBox.setManaged(true);
         displayGameResults();
@@ -179,16 +183,7 @@ public class BoggleController {
     }
 
     private void sendGameState() {
-        if (BoggleApplication.player.equals(PlayerType.SINGLE_PLAYER)) return;
-        char[][] currentBoard = board.getBoard();
-        String[][] stringBoard = new String[currentBoard.length][currentBoard[0].length];
-        for (int i = 0; i < currentBoard.length; i++) {
-            for (int j = 0; j < currentBoard[i].length; j++) {
-                stringBoard[i][j] = String.valueOf(currentBoard[i][j]);
-            }
-        }
-        GameState gameStateToSend = new GameState(stringBoard, currentPlayerIndex, players, INITIAL_TIME, roundNumber);
-        GameNetworkManager.sendGameState(gameStateToSend);
+        MultiplayerUtils.sendGameState(board, currentPlayerIndex, players, INITIAL_TIME, roundNumber);
     }
 
     public static void updateGameStateFromNetwork(GameState state) {
@@ -199,7 +194,7 @@ public class BoggleController {
         controller.players = state.getPlayers();
         controller.roundNumber = state.getRoundNumber();
 
-        if (controller.roundNumber >= controller.maxRounds) {
+        if (controller.roundNumber >= controller.NUMBER_OF_ROUNDS) {
             Platform.runLater(controller::showGameOverScreen);
             return;
         }
@@ -284,6 +279,11 @@ public class BoggleController {
             DialogUtils.showAlert(Alert.AlertType.ERROR, "Invalid word!");
         }
         boardUIManager.clearSelection();
+
+        GameMove newGameMove = new GameMove(currentPlayer.getName(), word, LocalDateTime.now());
+        SaveNewGameMoveThread saveNewGameMoveThread = new SaveNewGameMoveThread(newGameMove);
+        Thread starter = new Thread(saveNewGameMoveThread);
+        starter.start();
     }
 
     @FXML
@@ -300,15 +300,14 @@ public class BoggleController {
         }
         GameState gameStateToSave = new GameState(stringBoard, currentPlayerIndex, players,
                 gameTimer != null ? gameTimer.getTimeLeft() : INITIAL_TIME, roundNumber);
-        GamePersistenceManager.saveGame(gameStateToSave);
+        GameLoadingUtils.saveGame(gameStateToSave);
         if (gameTimer != null) { gameTimer.start(); }
     }
 
     public void loadGame() {
-        GameState loadedGame = GamePersistenceManager.loadGame();
+        GameState loadedGame = GameLoadingUtils.loadGame();
         if (loadedGame == null) return;
 
-        // Reconstruct the board from the 2D string array
         char[][] loadedBoard = new char[loadedGame.getBoardState().length][loadedGame.getBoardState()[0].length];
         for (int i = 0; i < loadedGame.getBoardState().length; i++) {
             for (int j = 0; j < loadedGame.getBoardState()[i].length; j++) {
@@ -343,7 +342,6 @@ public class BoggleController {
         });
         gameTimer.start();
 
-        // In multiplayer, synchronize loaded state with opponent
         if (!BoggleApplication.player.equals(PlayerType.SINGLE_PLAYER)) {
             sendGameState();
         }

@@ -18,7 +18,6 @@ public class WrongPlayerNameException extends RuntimeException {
         super(message);
     }
 
-    public WrongPlayerNameException() {
-    }
+    public WrongPlayerNameException() { }
 
 }
