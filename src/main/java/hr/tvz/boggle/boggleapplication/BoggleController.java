@@ -305,26 +305,47 @@ public class BoggleController {
     public void loadGame() {
         GameState loadedGame = GamePersistenceManager.loadGame();
         if (loadedGame == null) return;
+
+        // Reconstruct the board from the 2D string array
         char[][] loadedBoard = new char[loadedGame.getBoardState().length][loadedGame.getBoardState()[0].length];
         for (int i = 0; i < loadedGame.getBoardState().length; i++) {
             for (int j = 0; j < loadedGame.getBoardState()[i].length; j++) {
                 loadedBoard[i][j] = loadedGame.getBoardState()[i][j].charAt(0);
             }
         }
-        if (board == null) { board = new Board(); }
+
+        if (board == null) {
+            board = new Board();
+        }
         board.setBoard(loadedBoard);
         currentPlayerIndex = loadedGame.getCurrentPlayerIndex();
         players = loadedGame.getPlayers();
         roundNumber = loadedGame.getRoundNumber();
         int remainingTime = loadedGame.getRemainingTime();
+
         boardUIManager.updateBoardUI(board);
         updatePlayerUI();
-        if (gameTimer != null) { gameTimer.stop(); }
+
+        if (gameTimer != null) {
+            gameTimer.stop();
+        }
         gameTimer = new GameTimer(remainingTime, new GameTimer.TimerListener() {
-            @Override public void onTick(int secondsLeft) { timerLabel.setText("Time: " + secondsLeft + "s"); }
-            @Override public void onTimeEnd() { endTurn(); }
+            @Override
+            public void onTick(int secondsLeft) {
+                timerLabel.setText("Time: " + secondsLeft + "s");
+            }
+            @Override
+            public void onTimeEnd() {
+                endTurn();
+            }
         });
         gameTimer.start();
+
+        // In multiplayer, synchronize loaded state with opponent
+        if (!BoggleApplication.player.equals(PlayerType.SINGLE_PLAYER)) {
+            sendGameState();
+        }
+
         DialogUtils.showAlert(Alert.AlertType.INFORMATION, "Game was successfully loaded!");
     }
 
