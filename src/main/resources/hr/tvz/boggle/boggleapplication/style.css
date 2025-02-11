@@ -1,19 +1,19 @@
 .main-container {
-    -fx-padding: 15px 25px;
-    -fx-background-color: #1e1e1e; /* Dark background */
+    -fx-padding: 10px 20px;  /* Slightly smaller padding */
+    -fx-background-color: #1e1e1e;
     -fx-min-height: 600px;
 }
 
 .nav-bar {
-    -fx-padding: 12px 0;
-    -fx-background-color: #2c2c2c; /* Dark gray */
+    -fx-padding: 10px 0;
+    -fx-background-color: #2c2c2c;
     -fx-pref-width: 100%;
 }
 
-/* Timer and Word Counter */
+/* Timer and Word Counter Container */
 .timer-word-counter-container {
-    -fx-padding: 12px 0;
-    -fx-spacing: 20px;
+    -fx-padding: 10px 0;
+    -fx-spacing: 16px;  /* reduced spacing */
     -fx-alignment: center;
 }
 
@@ -23,19 +23,20 @@
 .counter-value,
 .current-player-label {
     -fx-font-family: "Segoe UI", sans-serif;
-    -fx-font-size: 22px;
-    -fx-text-fill: #f0f0f0; /* Light gray */
-    -fx-padding: 10px;
+    -fx-font-size: 18px;  /* reduced from 22px */
+    -fx-text-fill: #f0f0f0;
+    -fx-padding: 8px;
 }
 
 .counter-value {
-    -fx-text-fill: #ffcc00; /* Golden highlight */
+    -fx-text-fill: #ffcc00;
 }
 
+/* Navigation Links */
 .nav-link {
-    -fx-padding: 10px 20px;
-    -fx-font-size: 18px;
-    -fx-text-fill: #dcdcdc;  /* Light gray */
+    -fx-padding: 8px 16px;
+    -fx-font-size: 16px;  /* slightly smaller */
+    -fx-text-fill: #dcdcdc;
     -fx-border: none;
     -fx-cursor: hand;
     -fx-underline: false;
@@ -52,23 +53,23 @@
 
 /* Game Grid */
 .grid-pane {
-    -fx-background-color: #2b2b2b; /* Dark gray */
+    -fx-background-color: #2b2b2b;
     -fx-border-color: #444;
     -fx-border-width: 2px;
-    -fx-padding: 25px;
-    -fx-hgap: 12px;
-    -fx-vgap: 12px;
+    -fx-padding: 20px;  /* reduced padding */
+    -fx-hgap: 10px;   /* reduced gap */
+    -fx-vgap: 10px;   /* reduced gap */
 }
 
 /* Action Buttons */
 .button-container {
-    -fx-padding: 25px 0 0 0;
+    -fx-padding: 20px 0 0 0;  /* reduced top padding */
 }
 
 .action-button {
-    -fx-padding: 12px 25px;
-    -fx-font-size: 16px;
-    -fx-background-color: #3a3a3a; /* Darker Gray */
+    -fx-padding: 10px 20px;
+    -fx-font-size: 14px;  /* reduced font size */
+    -fx-background-color: #3a3a3a;
     -fx-text-fill: #dcdcdc;
     -fx-border-radius: 8px;
     -fx-cursor: hand;
@@ -81,29 +82,62 @@
     -fx-text-fill: #ffffff;
 }
 
+/* Game Over UI */
 #gameOverBox {
-    -fx-background-color: #2b2b2b; /* Dark gray background */
-    -fx-border-radius: 12px; /* Rounded corners */
-    -fx-padding: 30px 50px; /* Padding around content */
+    -fx-background-color: #2b2b2b;
+    -fx-border-radius: 12px;
+    -fx-padding: 20px 40px;
     -fx-alignment: center;
-    -fx-spacing: 20px;
+    -fx-spacing: 16px;
     -fx-pref-width: 400px;
     -fx-effect: dropshadow(gaussian, #000000, 10, 0, 0, 0);
 }
 
 #winnerLabel {
-    -fx-font-size: 32px;
+    -fx-font-size: 28px; /* reduced from 32px */
     -fx-font-weight: bold;
     -fx-text-fill: #f0f0f0;
     -fx-font-family: "Segoe UI", sans-serif;
     -fx-text-alignment: center;
-    -fx-padding: 10px 0;
+    -fx-padding: 8px 0;
 }
 
 #scoreLabel {
-    -fx-font-size: 20px;
+    -fx-font-size: 16px; /* reduced font size */
     -fx-font-family: "Segoe UI", sans-serif;
     -fx-text-fill: #f0f0f0;
     -fx-text-alignment: left;
-    -fx-padding: 10px 0;
+    -fx-padding: 8px 0;
+}
+
+/* Chat Styles */
+#chatTextArea {
+    -fx-font-size: 16px;
+    -fx-min-height: 200px;   /* Make chat area bigger */
+    -fx-background-color: #333333;
+    -fx-text-fill: black;
+    -fx-padding: 10px;
+    -fx-border-color: #555555;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+}
+
+#chatMessageTextField {
+    -fx-font-size: 16px;
+    -fx-padding: 8px;
+    -fx-background-color: #444444;
+    -fx-text-fill: #ffffff;
+    -fx-border-radius: 4px;
+    -fx-border-color: #666666;
+    -fx-border-width: 1px;
+}
+
+#sendChatButton {
+    -fx-font-size: 16px;
+    -fx-padding: 8px 12px;
+    -fx-background-color: #555555;
+    -fx-text-fill: #ffffff;
+    -fx-border-radius: 4px;
+    -fx-border-color: #777777;
+    -fx-border-width: 1px;
 }

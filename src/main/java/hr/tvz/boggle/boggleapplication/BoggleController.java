@@ -1,22 +1,30 @@
 package hr.tvz.boggle.boggleapplication;
 
+import hr.tvz.boggle.chat.ChatService;
 import hr.tvz.boggle.core.Board;
 import hr.tvz.boggle.core.Dictionary;
 import hr.tvz.boggle.core.Player;
+import hr.tvz.boggle.jndi.ConfigurationReader;
 import hr.tvz.boggle.model.GameState;
 import hr.tvz.boggle.model.PlayerType;
 import hr.tvz.boggle.network.GameNetworkManager;
 import hr.tvz.boggle.ui.BoardUIManager;
 import hr.tvz.boggle.util.*;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import lombok.Getter;
 
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +40,9 @@ public class BoggleController {
     @FXML private Label winnerLabel;
     @FXML private Label scoreLabel;
     @FXML private Label currentPlayerLabel;
+    @FXML private TextField chatMessageTextField;
+    @FXML private TextArea chatTextArea;
+    @FXML private Button sendChatButton;
 
     private Board board;
     private Dictionary dictionary;
@@ -41,6 +52,7 @@ public class BoggleController {
     private static final int INITIAL_TIME = 20;
     private int roundNumber = 0;
     private final int maxRounds = 3; // Adjust as needed.
+    private static ChatService stub;
 
     // Helper for board UI management.
     private BoardUIManager boardUIManager;
@@ -68,6 +80,28 @@ public class BoggleController {
         boardUIManager = new BoardUIManager(boardGrid);
 
         Platform.runLater(this::handleNewGame);
+
+        if (!BoggleApplication.player.equals(PlayerType.SINGLE_PLAYER)) {
+            try {
+                String rmiPort = ConfigurationReader.getValue("rmi.port");
+                Registry registry = LocateRegistry.getRegistry("localhost", Integer.parseInt(rmiPort));
+                stub = (ChatService) registry.lookup(ChatService.REMOTE_OBJECT_NAME);
+
+                chatTextArea.setVisible(true);
+                chatMessageTextField.setVisible(true);
+                sendChatButton.setVisible(true);
+            } catch (RemoteException | NotBoundException e) {
+                throw new RuntimeException(e);
+            }
+
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), e -> ChatUtils.refreshChatTextArea(stub, chatTextArea)));
+            timeline.setCycleCount(Animation.INDEFINITE);
+            timeline.playFromStart();
+        } else {
+            chatTextArea.setVisible(false);
+            chatMessageTextField.setVisible(false);
+            sendChatButton.setVisible(false);
+        }
     }
 
     private void updatePlayerUI() {
@@ -112,20 +146,14 @@ public class BoggleController {
         }
         currentPlayerIndex = nextIndex;
         sendGameState();
-        disableUI();
+        disableUI(true);
         timerLabel.setText("Time: 0s");
     }
 
-    private void disableUI() {
-        boardGrid.setDisable(true);
-        submitButton.setDisable(true);
-        clearButton.setDisable(true);
-    }
-
-    private void enableUI() {
-        boardGrid.setDisable(false);
-        submitButton.setDisable(false);
-        clearButton.setDisable(false);
+    private void disableUI(Boolean shouldDisable) {
+        boardGrid.setDisable(shouldDisable);
+        submitButton.setDisable(shouldDisable);
+        clearButton.setDisable(shouldDisable);
     }
 
     private void showGameOverScreen() {
@@ -135,6 +163,9 @@ public class BoggleController {
         timerLabel.setVisible(false); timerLabel.setManaged(false);
         wordCounterLabel.setVisible(false); wordCounterLabel.setManaged(false);
         wordsCorrect.setVisible(false); wordsCorrect.setManaged(false);
+        chatMessageTextField.setVisible(false); chatMessageTextField.setManaged(false);
+        chatTextArea.setVisible(false); chatTextArea.setManaged(false);
+        sendChatButton.setVisible(false); chatTextArea.setManaged(false);
 
         gameOverBox.setVisible(true); gameOverBox.setManaged(true);
         displayGameResults();
@@ -185,14 +216,14 @@ public class BoggleController {
                 @Override public void onTimeEnd() { controller.endTurn(); }
             });
             controller.gameTimer.start();
-            controller.enableUI();
+            controller.disableUI(false);
         } else {
             if (controller.gameTimer != null) {
                 controller.gameTimer.stop();
                 controller.gameTimer = null;
             }
             controller.timerLabel.setText("Time: 0s");
-            controller.disableUI();
+            controller.disableUI(true);
             controller.boardGrid.setVisible(false);
         }
         controller.updatePlayerUI();
@@ -206,17 +237,17 @@ public class BoggleController {
             players = new ArrayList<>();
             players.add(new Player("single_player"));
             currentPlayerIndex = 0;
-            enableUI();
+            disableUI(false);
         } else {
             players = new ArrayList<>();
             players.add(new Player("player_one"));
             players.add(new Player("player_two"));
             if (BoggleApplication.player.equals(PlayerType.PLAYER_ONE)) {
                 currentPlayerIndex = 0;
-                enableUI();
+                disableUI(false);
             } else {
                 currentPlayerIndex = 1;
-                disableUI();
+                disableUI(true);
             }
         }
         updatePlayerUI();
@@ -295,6 +326,21 @@ public class BoggleController {
         });
         gameTimer.start();
         DialogUtils.showAlert(Alert.AlertType.INFORMATION, "Game was successfully loaded!");
+    }
+
+    @FXML
+    public void sendChatMessage() {
+        Player currentPlayer = players.get(currentPlayerIndex);
+        String chatMessage = chatMessageTextField.getText();
+        String playerName = currentPlayer.getName();
+
+        try {
+            stub.sendChatMessage(playerName + ": " + chatMessage);
+            ChatUtils.refreshChatTextArea(stub, chatTextArea);
+            chatMessageTextField.setText("");
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void generateHTMLDocumentation() {

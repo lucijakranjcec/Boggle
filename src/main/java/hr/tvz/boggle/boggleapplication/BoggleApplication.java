@@ -33,7 +33,7 @@ public class BoggleApplication extends Application {
             VBox root = loader.load();
 
             // Adding CSS styles.
-            Scene scene = new Scene(root, 800, 800);
+            Scene scene = new Scene(root, 800, 900);
             scene.getStylesheets().add(Objects.requireNonNull(
                     getClass().getResource("/hr/tvz/boggle/boggleapplication/style.css")).toExternalForm());
 
