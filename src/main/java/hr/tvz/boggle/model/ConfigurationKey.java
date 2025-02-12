@@ -1,16 +1,15 @@
 package hr.tvz.boggle.model;
 
-import lombok.Getter;
-
-@Getter
 public enum ConfigurationKey {
-
     RMI_HOST("rmi.host"), RMI_PORT("rmi.port"), CHAT_HOST("chat.host");
 
-    private String key;
+    private final String key;
 
     ConfigurationKey(String key) {
         this.key = key;
     }
 
+    public String getKey() {
+        return key;
+    }
 }
