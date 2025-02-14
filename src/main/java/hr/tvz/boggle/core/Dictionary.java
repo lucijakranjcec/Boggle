@@ -24,6 +24,10 @@ public class Dictionary {
     }
 
     public boolean isValidWord(String word) {
+        if (word == null || word.trim().length() < 3) {
+            return false;
+        }
         return words.contains(word.toUpperCase().trim());
     }
+
 }

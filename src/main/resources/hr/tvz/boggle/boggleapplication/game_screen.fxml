@@ -22,8 +22,7 @@
 
     <HBox spacing="20" alignment="CENTER" styleClass="timer-word-counter-container">
         <Label fx:id="timerLabel" text="Time: 60s" styleClass="timer-label" />
-        <Label fx:id="wordsCorrect" text="Words Correct: " styleClass="counter-label"/>
-        <Label fx:id="wordCounterLabel" text="0" styleClass="counter-value"/>
+        <Label fx:id="scoreLabel" text="Score: " styleClass="counter-label"/>
     </HBox>
 
     <HBox alignment="CENTER">
@@ -49,7 +48,7 @@
 
     <VBox fx:id="gameOverBox" alignment="CENTER" spacing="10" visible="false">
         <Label fx:id="winnerLabel" text="Winner: " />
-        <Label fx:id="scoreLabel" text="Final Scores: " />
+        <Label fx:id="scoreLabelResult" text="Final Scores: " />
     </VBox>
 
 </VBox>

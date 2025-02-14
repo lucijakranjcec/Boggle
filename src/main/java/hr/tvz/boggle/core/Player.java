@@ -8,12 +8,12 @@ public class Player implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String name;
-    private int wordCount;
+    private int score;
     private Set<String> foundWords;
 
     public Player(String name) {
         this.name = name;
-        this.wordCount = 0;
+        this.score = 0;
         this.foundWords = new HashSet<>();
     }
 
@@ -21,12 +21,12 @@ public class Player implements Serializable {
         return name;
     }
 
-    public int getWordCount() {
-        return wordCount;
+    public int getScore() {
+        return score;
     }
 
-    public void incrementWordCount() {
-        wordCount++;
+    public void addScore(int points) {
+        this.score += points;
     }
 
     public boolean hasFoundWord(String word) {
@@ -35,5 +35,15 @@ public class Player implements Serializable {
 
     public void addFoundWord(String word) {
         foundWords.add(word);
+    }
+
+    public int calculateWordScore(String word) {
+        int length = word.length();
+        if (length == 3) return 1;
+        if (length == 4) return 2;
+        if (length == 5) return 3;
+        if (length == 6) return 4;
+        if (length == 7) return 5;
+        return 6;
     }
 }

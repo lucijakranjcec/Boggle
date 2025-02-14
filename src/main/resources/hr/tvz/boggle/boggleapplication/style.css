@@ -96,7 +96,7 @@
     -fx-padding: 8px 0;
 }
 
-#scoreLabel {
+#scoreLabelResult {
     -fx-font-size: 16px;
     -fx-font-family: "Segoe UI", sans-serif;
     -fx-text-fill: #f0f0f0;

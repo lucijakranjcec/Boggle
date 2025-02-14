@@ -6,13 +6,9 @@ import java.util.List;
 
 public class GameState implements Serializable {
     private String[][] boardState;
-
     private int currentPlayerIndex;
-
     private List<Player> players;
-
     private int remainingTime;
-
     private int roundNumber;
 
     public GameState(String[][] boardState, int currentPlayerIndex, List<Player> players, int remainingTime, int roundNumber) {

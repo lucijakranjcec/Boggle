@@ -40,11 +40,10 @@ public class BoggleController {
     @FXML private Button submitButton;
     @FXML private Button clearButton;
     @FXML private Label timerLabel;
-    @FXML private Label wordCounterLabel;
-    @FXML private Label wordsCorrect;
+    @FXML private Label scoreLabel;
     @FXML private VBox gameOverBox;
     @FXML private Label winnerLabel;
-    @FXML private Label scoreLabel;
+    @FXML private Label scoreLabelResult;
     @FXML private Label currentPlayerLabel;
     @FXML private TextField chatMessageTextField;
     @FXML private TextArea chatTextArea;
@@ -58,7 +57,7 @@ public class BoggleController {
     List<GameMove> gameMoves = new ArrayList<>();
     private int currentPlayerIndex = 0;
     private GameTimer gameTimer;
-    private static final int INITIAL_TIME = 20;
+    private static final int INITIAL_TIME = 40;
     private int roundNumber = 0;
     private final int NUMBER_OF_ROUNDS = 2;
     private static ChatService stub;
@@ -118,7 +117,7 @@ public class BoggleController {
 
     private void updatePlayerUI() {
         Player currentPlayer = players.get(currentPlayerIndex);
-        wordCounterLabel.setText(String.valueOf(currentPlayer.getWordCount()));
+        scoreLabel.setText("Score: " + currentPlayer.getScore());
         currentPlayerLabel.setText("Current Player: " + currentPlayer.getName());
     }
 
@@ -173,8 +172,7 @@ public class BoggleController {
         submitButton.setVisible(false); submitButton.setManaged(false);
         clearButton.setVisible(false); clearButton.setManaged(false);
         timerLabel.setVisible(false); timerLabel.setManaged(false);
-        wordCounterLabel.setVisible(false); wordCounterLabel.setManaged(false);
-        wordsCorrect.setVisible(false); wordsCorrect.setManaged(false);
+        scoreLabel.setVisible(false); scoreLabel.setManaged(false);
         chatMessageTextField.setVisible(false); chatMessageTextField.setManaged(false);
         chatTextArea.setVisible(false); chatTextArea.setManaged(false);
         sendChatButton.setVisible(false); chatTextArea.setManaged(false);
@@ -186,7 +184,7 @@ public class BoggleController {
 
     private void displayGameResults() {
         winnerLabel.setText(GameResultsHelper.getWinnerDetails(players));
-        scoreLabel.setText(GameResultsHelper.getScores(players));
+        scoreLabelResult.setText(GameResultsHelper.getScores(players));
     }
 
     private void sendGameState() {
@@ -195,7 +193,6 @@ public class BoggleController {
 
     public static void updateGameStateFromNetwork(GameState state) {
         BoggleController controller = getInstance();
-        if (controller == null) return;
 
         controller.currentPlayerIndex = state.getCurrentPlayerIndex();
         controller.players = state.getPlayers();
@@ -272,13 +269,16 @@ public class BoggleController {
     public void handleWordSubmit() {
         String word = boardUIManager.getCurrentWord().toUpperCase();
         Player currentPlayer = players.get(currentPlayerIndex);
+
         if (dictionary.isValidWord(word)) {
             if (currentPlayer.hasFoundWord(word)) {
                 DialogUtils.showAlert(Alert.AlertType.WARNING, "Already found this word!");
             } else {
-                currentPlayer.incrementWordCount();
+                int points = currentPlayer.calculateWordScore(word);
+                currentPlayer.addScore(points);
                 currentPlayer.addFoundWord(word);
-                wordCounterLabel.setText(String.valueOf(currentPlayer.getWordCount()));
+                scoreLabel.setText("Score: " + currentPlayer.getScore());
+                DialogUtils.showAlert(Alert.AlertType.INFORMATION, "Valid word! You earned " + points + " points.");
             }
         } else {
             DialogUtils.showAlert(Alert.AlertType.ERROR, "Invalid word!");
