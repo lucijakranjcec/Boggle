@@ -26,9 +26,11 @@ public class BoardUIManager {
         char[][] boardData = board.getBoard();
         for (int i = 0; i < boardData.length; i++) {
             for (int j = 0; j < boardData[i].length; j++) {
-                Label cell = new Label(" " + boardData[i][j] + " ");
-                cell.setStyle("-fx-border-color: black; -fx-padding: 15px; -fx-font-size: 24px; " +
-                        "-fx-alignment: center; -fx-background-color: #ecf0f1;");
+                Label cell = new Label(String.valueOf(boardData[i][j]));
+                cell.setPrefSize(70, 70);
+                cell.setMinSize(70, 70);
+                cell.setMaxSize(70, 70);
+                cell.setStyle("-fx-border-color: black; -fx-font-size: 24px; -fx-alignment: center; -fx-background-color: #ecf0f1;");
                 cell.setOnMouseClicked(this::handleCellClick);
                 boardGrid.add(cell, j, i);
             }
