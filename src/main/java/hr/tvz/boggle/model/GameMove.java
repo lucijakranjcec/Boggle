@@ -11,18 +11,15 @@ public class GameMove implements Serializable {
     private String word;
     private LocalDateTime localDateTime;
 
-    // No-argument constructor
     public GameMove() {
     }
 
-    // All-argument constructor
     public GameMove(String playerName, String word, LocalDateTime localDateTime) {
         this.playerName = playerName;
         this.word = word;
         this.localDateTime = localDateTime;
     }
 
-    // Getters and Setters
     public String getPlayerName() {
         return playerName;
     }
