@@ -6,10 +6,10 @@ public class Board {
 
     // Each string represents the letters on one die
     private final String[] dice = {
-            "AAAFRS", "AAEEEE", "AAPSSU", "ABELRS",
-            "ABDELX", "ACDEMP", "ACELRS", "ADENNN",
-            "AEEGNN", "AEEGMU", "AEGMNN", "AFIRSY",
-            "BDEOZV", "BDEORT", "BILLRY", "CDERXU"
+            "AAEEGN", "ABBJOO", "ACHOPS", "AFFKPS",
+            "AOOTTW", "CIMOTU", "DEILRX", "DELRVY",
+            "DISTTY", "EEGHNW", "EEINSU", "EHRTVW",
+            "EIOSST", "ELRTTY", "HIMNUQ", "HLNNRZ"
     };
 
     private char[][] board;
